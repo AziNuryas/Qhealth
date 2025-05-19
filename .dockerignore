@@ -1,0 +1,28 @@
+# Mengabaikan direktori node_modules yang biasanya besar dan hanya diperlukan saat build di container
+node_modules/
+
+# Mengabaikan file environment lokal .env yang tidak perlu di copy ke dalam image
+.env
+
+# Mengabaikan file konfigurasi lokal yang tidak diperlukan dalam container
+.idea/
+.vscode/
+
+# Mengabaikan file git yang tidak diperlukan
+.git/
+
+# Mengabaikan file log atau cache yang tidak perlu
+storage/*
+!storage/app/public
+vendor/
+
+# Mengabaikan file composer.lock untuk menghindari konflik dependensi
+composer.lock
+
+# Mengabaikan file yang bersifat sementara atau build dari editor
+*.log
+*.bak
+*.swp
+
+# Mengabaikan direktori atau file lain yang bersifat pribadi dan tidak dibutuhkan di dalam image
+tests/
