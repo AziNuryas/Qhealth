@@ -14,7 +14,7 @@ class UserController extends Controller
     }
 
     public function update(Request $request)
-    {
+    {   
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -24,7 +24,7 @@ class UserController extends Controller
             'phone' => 'required|string|max:20',
         ]);
 
-        $user->update($validated);
+      $user->update($request->all());
 
         return Redirect::route('profile.show')->with('status', 'profile-updated');
     }

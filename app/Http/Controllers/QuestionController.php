@@ -17,22 +17,24 @@ class QuestionController extends Controller
     }
 
     // Menyimpan pertanyaan baru
-    public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'question' => 'required|string|max:255',
-        ]);
+  public function store(Request $request)
+{
+    // Debugging untuk melihat data yang diterima
+    dd($request->all());
 
-        // Menyimpan pertanyaan baru dengan user_id yang terautentikasi
-        Question::create([
-            'question' => $request->input('question'),
-            'user_id' => auth()->user()->id,  // pastikan auth() mengembalikan user
-        ]);
+    // Validasi dan simpan data
+    $request->validate([
+        'question' => 'required|string|min:5', // pastikan field question tidak kosong
+    ]);
 
-        // Mengarahkan kembali ke dashboard dengan pesan sukses
-        return redirect()->route('dashboard')->with('success', 'Pertanyaan berhasil dikirim.');
-    }
+    // Menyimpan pertanyaan ke database
+    \App\Models\Question::create([
+        'user_id' => auth()->id(),
+        'question' => $request->question,  // Data yang dikirimkan
+    ]);
+
+    return redirect()->route('questions.index')->with('success', 'Pertanyaan berhasil ditambahkan!');
+}
 
     // Menampilkan form untuk menjawab pertanyaan
     public function answerForm($id)
