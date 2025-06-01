@@ -24,10 +24,16 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        restart: always
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Verify Docker is running
+        run: |
+          docker --version
+          docker ps
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -54,13 +60,13 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          for i in {1..10}; do
+          for i in {1..20}; do
             if mysqladmin ping -h 127.0.0.1 -u polindra -p polindra --silent; then
               echo "MySQL is ready!"
               break
             fi
-            echo "Waiting for MySQL... Attempt $i/10"
-            sleep 3
+            echo "Waiting for MySQL... Attempt $i/20"
+            sleep 5
           done
 
       - name: Run database migrations and seed
