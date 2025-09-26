@@ -30,8 +30,23 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-     'auth' => \App\Http\Middleware\Authenticate::class,
-   'admin' => \App\Http\Middleware\AdminMiddleware::class,  // Pastikan middleware admin terdaftar di sini
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,  // Pastikan middleware admin terdaftar di sini
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
+
+    /**
+     * The application's API middleware stack.
+     *
+     * These middleware are assigned to all API routes.
+     *
+     * @var array
+     */
+    protected $middlewareGroups = [
+        'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
     ];
 }

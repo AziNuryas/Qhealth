@@ -10,6 +10,9 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminQuestionController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAnswerController;
+use App\Http\Controllers\AuthController;
+use Illuminate\Http\Request;
+
 
 
 // Rute untuk admin (dengan middleware auth dan admin)
@@ -61,6 +64,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/questions/{id}/answer', [QuestionController::class, 'answerForm'])->name('questions.answer.form');
     Route::post('/questions/{id}/answer', [QuestionController::class, 'answer'])->name('questions.answer.store');
 });
+
+Route::post('login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
 
 // Rute publik (tanpa autentikasi)
 Route::get('/', fn () => view('welcome'))->name('home');
