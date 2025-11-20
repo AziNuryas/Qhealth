@@ -13,6 +13,20 @@ use App\Http\Controllers\AdminAnswerController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\ChatController;
+
+
+
+Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+// Test route untuk cek API key
+Route::get('/test-openai', function() {
+    $apiKey = config('services.openai.api_key');
+    return response()->json([
+        'api_key_exists' => !empty($apiKey),
+        'api_key_length' => strlen($apiKey),
+        'api_key_prefix' => substr($apiKey, 0, 10) . '...'
+    ]);
+});
 
 
 // Rute untuk admin (dengan middleware auth dan admin)
@@ -42,7 +56,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/answers/{id}/edit', [AdminAnswerController::class, 'edit'])->name('admin.answers.edit');
     Route::delete('admin/answers/{id}', [AdminAnswerController::class, 'destroy'])->name('admin.answers.destroy');
     Route::get('/admin/answers/{id}', [AdminAnswerController::class, 'show'])->name('admin.answers.show');
-
+    
 
 });
 // Rute untuk pengguna biasa (auth)
@@ -58,13 +72,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Pertanyaan
-    Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+  Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
     Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
     Route::get('/pertanyaan', [QuestionController::class, 'index'])->name('questions.index');
-    Route::get('/questions/{id}/answer', [QuestionController::class, 'answerForm'])->name('questions.answer.form');
+    Route::get('/questions/{id}/answer', [QuestionController::class, 'answerForm'])->name('questions.answerForm'); // Ubah nama route
     Route::post('/questions/{id}/answer', [QuestionController::class, 'answer'])->name('questions.answer.store');
 });
-
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

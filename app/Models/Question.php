@@ -9,36 +9,17 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'content',
-        'user_id',
-        'question',
-    ];
+    protected $fillable = ['user_id', 'title', 'question'];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    // Relationship with User
+    // Relasi dengan user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relationship with Answers
+    // Relasi dengan answers
     public function answers()
     {
         return $this->hasMany(Answer::class);
     }
-
-    // Scope for search
-    public function scopeSearch($query, $search)
-    {
-        return $query->where('title', 'like', "%{$search}%")
-                    ->orWhere('content', 'like', "%{$search}%");
-    }
-
-    
 }

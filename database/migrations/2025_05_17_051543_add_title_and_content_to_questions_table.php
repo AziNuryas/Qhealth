@@ -13,7 +13,7 @@ return new class extends Migration
 public function up()
 {
     Schema::table('questions', function (Blueprint $table) {
-        $table->string('title');
+         $table->string('title')->default('Default Title')->change(); 
         $table->text('content');
     });
 }
@@ -22,6 +22,7 @@ public function down()
 {
     Schema::table('questions', function (Blueprint $table) {
         $table->dropColumn(['title', 'content']);
+         $table->string('title')->nullable()->change();
     });
 }
 

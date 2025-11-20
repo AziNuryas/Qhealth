@@ -10,497 +10,527 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
   <!-- Custom Styles -->
   <style>
-    /* 🌿 Background dan Animasi Umum */
-    body {
-      background: linear-gradient(120deg, #a8d5ba, #b0d6e8, #e6b9d2);
-      background-size: 400% 400%;
-      animation: bgFlow 20s ease infinite;
-      position: relative;
-      overflow-x: hidden;
-      background: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Inter', sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    @keyframes bgFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* 🌬️ Bubble Background */
-    .bg-bubble {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(20px);
-      z-index: 0;
-      animation: floatUp 25s linear infinite;
-      opacity: var(--bubble-opacity);
-    }
-
-    .bubble1 { width: 300px; height: 300px; background: #a5f3fc; top: 50%; left: -150px; }
-    .bubble2 { width: 200px; height: 200px; background: #d8b4fe; bottom: 10%; right: -100px; }
-    .bubble3 { width: 150px; height: 150px; background: #fecaca; top: 10%; right: 20%; }
-
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-40px) scale(1.05); }
-      100% { transform: translateY(0) scale(1); }
-    }
-
-    /* 🌗 Dark Mode Variables - Improved Contrast */
     :root {
-      /* Mode Terang */
-      --bg-color: #f8fafc;
-      --text-color: #1a1a1a;
-      --card-bg: #ffffff;
-      --bubble-opacity: 0.2;
-      --border-color: rgba(0, 0, 0, 0.1);
-      --card-text: #333333;
-      --search-bg: rgba(255, 255, 255, 0.9);
-      --search-focus-bg: rgba(255, 255, 255, 1);
-      --search-shadow: rgba(34, 197, 94, 0.2);
-      --primary-color: #16a34a; /* Warna primary lebih gelap untuk kontras */
-      --primary-hover: #15803d;
-      --dropdown-hover: rgba(22, 163, 74, 0.1);
-      --muted-text: #555555; /* Warna muted text yang gelap */
-      --link-hover: #15803d;
-      --icon-color: #444444;
-      --input-text: #333333;
-      --placeholder-color: #666666;
+      /* Light Mode */
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
+      --accent-primary: #10b981;
+      --accent-secondary: #059669;
+      --card-bg: rgba(255, 255, 255, 0.8);
+      --card-border: rgba(15, 23, 42, 0.06);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+      --blur: 20px;
     }
 
     body.dark-mode {
-      /* Mode Gelap */
-      --bg-color: #0f172a;
-      --text-color: #f1f5f9;
-      --card-bg: #1e293b;
-      --bubble-opacity: 0.05;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --card-text: #e2e8f0;
-      --search-bg: rgba(30, 41, 59, 0.8);
-      --search-focus-bg: rgba(30, 41, 59, 1);
-      --search-shadow: rgba(34, 197, 94, 0.25);
-      --muted-text: #cbd5e1; /* Warna muted text yang terang */
-      --dropdown-hover: rgba(34, 197, 94, 0.15);
-      --link-hover: #4ade80;
-      --icon-color: #cbd5e1;
-      --input-text: #f1f5f9;
-      --placeholder-color: #94a3b8;
+      /* Dark Mode */
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
+      --accent-primary: #10b981;
+      --accent-secondary: #34d399;
+      --card-bg: rgba(30, 41, 59, 0.8);
+      --card-border: rgba(241, 245, 249, 0.08);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    /* Pastikan teks card selalu memiliki kontras yang baik */
-    .card-text, .card-title, .card-body p, .card-body h1, 
-    .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6 {
-      color: var(--card-text) !important;
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      transition: all 0.3s ease;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Perbaikan untuk teks muted */
-    .text-muted {
-      color: var(--muted-text) !important;
+    /* Animated Background */
+    .orb-container {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
     }
 
-    /* 🌟 Komponen UI */
-    .navbar, footer {
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background-color: var(--card-bg) !important;
-      color: var(--text-color) !important;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.9rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      top: -150px;
+      left: -150px;
+    }
+
+    .orb-2 {
+      width: 250px;
+      height: 250px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      bottom: -100px;
+      right: -100px;
+      animation-delay: 5s;
+    }
+
+    .orb-3 {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      top: 40%;
+      right: 15%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(20px, -20px) scale(1.05); }
+      66% { transform: translate(-15px, 15px) scale(0.95); }
+    }
+
+    /* Navbar */
+    .navbar {
+      height: 56px;
+      backdrop-filter: saturate(180%) blur(var(--blur));
+      -webkit-backdrop-filter: saturate(180%) blur(var(--blur));
+      background: var(--card-bg) !important;
+      border: none;
+      border-bottom: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 1030;
     }
 
     .navbar-brand {
       font-weight: 700;
-      color: var(--primary-color) !important;
-      font-size: 1.3rem;
-      letter-spacing: -0.5px;
+      font-size: 18px;
+      color: var(--accent-primary) !important;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .navbar-brand i {
+      font-size: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
     }
 
     .nav-link {
-      color: var(--text-color) !important;
-      transition: all 0.3s ease;
+      color: var(--text-primary) !important;
       font-weight: 500;
+      font-size: 13px;
+      padding: 6px 12px !important;
+      border-radius: 8px;
+      transition: all 0.2s ease;
     }
 
     .nav-link:hover {
-      color: var(--primary-color) !important;
+      background: var(--card-border);
+      color: var(--accent-primary) !important;
     }
 
-    /* Dropdown item warna teks */
+    /* Dropdown */
+    .dropdown-menu {
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+      margin-top: 6px !important;
+      min-width: 200px;
+    }
+
     .dropdown-item {
-      color: var(--text-color) !important;
-    }
-
-    /* 🔍 Search Bar Stylish - Simple & Clean with Better Contrast */
-    .search-wrapper {
-      position: relative;
-      max-width: 210px;
-    }
-
-    .search-form {
-      max-width: 100%;
-    }
-
-    .search-input {
-      border-radius: 30px !important;
-      padding-left: 38px !important;
-      padding-right: 15px !important; 
-      background-color: var(--search-bg) !important;
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border-color) !important;
-      transition: all 0.3s ease !important;
-      font-size: 0.85rem !important;
-      height: 36px;
-      color: var(--input-text) !important;
-    }
-
-    .search-input::placeholder {
-      color: var(--placeholder-color) !important;
-      opacity: 1;
-    }
-
-    .search-input:focus {
-      box-shadow: 0 0 0 3px var(--search-shadow) !important;
-      background-color: var(--search-focus-bg) !important;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--icon-color);
-      opacity: 0.7;
-      pointer-events: none;
-      transition: all 0.3s ease;
-    }
-
-    .search-input:focus ~ .search-icon {
-      color: var(--primary-color);
-      opacity: 1;
-    }
-
-    /* Theme Toggle Button Styling */
-    .theme-toggle-btn {
-      background: transparent;
-      color: var(--icon-color);
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      color: var(--text-primary) !important;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-
-    .theme-toggle-btn:hover {
-      color: var(--primary-color);
-      transform: rotate(20deg);
-    }
-
-    /* Dropdown styling with better contrast */
-    .dropdown-item {
-      transition: all 0.2s ease;
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    .dropdown-menu {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      border-radius: 10px;
-      margin-top: 8px;
-      overflow: hidden;
+      gap: 8px;
     }
 
     .dropdown-item:hover {
-      background-color: var(--dropdown-hover);
-      padding-left: 1.2rem;
+      background: var(--card-border);
+      color: var(--accent-primary) !important;
+      transform: translateX(3px);
     }
 
     .dropdown-item i {
-      color: var(--primary-color);
-      margin-right: 8px;
-      font-size: 0.9rem;
+      font-size: 16px;
+      color: var(--accent-primary);
     }
 
-    /* Button styling */
+    /* Notification */
+    .notification-wrapper {
+      position: relative;
+    }
+
+    .notification-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .notification-icon:hover {
+      background: var(--accent-primary);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .badge-notification {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--card-border);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--accent-primary);
+      color: white;
+      transform: rotate(180deg);
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px var(--card-border);
+    }
+
+    /* Buttons */
     .btn {
-      transition: all 0.3s ease;
-      border-radius: 30px;
-      font-weight: 500;
-      font-size: 0.85rem;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      transition: all 0.2s ease;
     }
 
     .btn-success, .btn-primary {
-      border-radius: 30px;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
     }
 
     .btn-success:hover, .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .btn-danger {
-      border-radius: 30px;
-      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+    .btn-outline-secondary {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
     }
 
-    .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    .btn-outline-secondary:hover {
+      background: var(--card-border);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
     }
 
     .btn-sm {
-      padding: 0.25rem 0.8rem;
+      padding: 6px 12px;
+      font-size: 12px;
     }
 
-    .btn i {
-      margin-right: 4px;
-    }
-
-    .card,
-    .testimonial-card,
-    .accordion-body {
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      backdrop-filter: blur(12px);
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--card-border);
       border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 16px rgba(31, 38, 135, 0.05);
+      box-shadow: var(--shadow-md);
       transition: all 0.3s ease;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
 
-    .section-title {
-      font-weight: 700;
-      font-size: 1.5rem;
-      text-align: center;
-      color: var(--primary-color);
-      position: relative;
-      margin-bottom: 2rem;
-    }
-
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-      height: 3px;
-      background: linear-gradient(to right, #86efac, var(--primary-color));
-      border-radius: 2px;
-    }
-
-    .testimonial-card {
-      border-left: 3px solid var(--primary-color);
-      padding: 0.8rem;
-      font-size: 0.85rem;
-    }
-
+    /* Footer */
     footer {
-      font-size: 0.8rem;
-      background-color: var(--card-bg) !important;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: var(--text-color) !important;
-      border-top: 1px solid var(--border-color);
-      padding: 2rem 0;
-      text-align: center;
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--blur));
+      border-top: 1px solid var(--card-border);
+      padding: 32px 0 16px;
+      margin-top: 60px;
     }
 
-    .form-control {
-      background-color: var(--card-bg);
-      color: var(--input-text);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 0.9rem;
+    .footer-logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 12px;
     }
 
-    .form-control:focus {
-      border-color: #86efac;
-      box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.2);
-      background-color: var(--card-bg);
-      color: var(--input-text);
-    }
-
-    /* ✨ Fade In Animation */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.8s ease-out;
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Social icons */
     .social-icon {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background-color: rgba(34, 197, 94, 0.1);
+      background: var(--card-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 0.5rem;
-      color: var(--primary-color);
-      transition: all 0.3s ease;
+      margin: 0 4px;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      font-size: 14px;
     }
-    
+
     .social-icon:hover {
-      transform: translateY(-3px);
-      background-color: var(--primary-color);
+      background: var(--accent-primary);
       color: white;
-      box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+      transform: translateY(-2px);
     }
 
-    /* Footer logo */
-    .footer-logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
+    footer a {
+      color: var(--text-secondary) !important;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-size: 13px;
     }
 
-    /* Link styling untuk footer */
-    footer a.text-decoration-none {
-      color: var(--muted-text) !important;
+    footer a:hover {
+      color: var(--accent-primary) !important;
+    }
+
+    /* Form Controls */
+    .form-control {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 10px 12px;
+      font-size: 13px;
       transition: all 0.2s ease;
     }
 
-    footer a.text-decoration-none:hover {
-      color: var(--link-hover) !important;
-      text-decoration: underline !important;
+    .form-control:focus {
+      background: var(--bg-secondary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      outline: none;
     }
 
-    /* Mobile responsive */
-    @media (max-width: 576px) {
-      .search-wrapper {
-        width: 100%;
-        max-width: none;
-        margin-bottom: 10px;
-      }
-      
-      .footer-logo {
-        font-size: 1.3rem;
-      }
-      
-      .social-icon {
-        width: 32px;
-        height: 32px;
-      }
+    .form-control::placeholder {
+      color: var(--text-tertiary);
     }
 
-    /* Badge Notification */
-    .badge-notification {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      padding: 0.15rem 0.4rem;
-      border-radius: 50%;
-      font-size: 0.65rem;
-      background-color: #ef4444;
+    /* Back Button */
+    .btn-back {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+
+    .btn-back:hover {
+      background: var(--accent-primary);
       color: white;
-      font-weight: 700;
-      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+      border-color: transparent;
+      transform: translateX(-2px);
     }
 
-    /* Avatar styling */
-    .avatar {
-      border: 2px solid rgba(34, 197, 94, 0.3);
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
 
-    /* Custom Font */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-tertiary);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar-brand {
+        font-size: 16px;
+      }
+      
+      .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <!-- 🎈 Bubble Background -->
-  <div class="bg-bubble bubble1"></div>
-  <div class="bg-bubble bubble2"></div>
-  <div class="bg-bubble bubble3"></div>
+  <!-- Animated Background -->
+  <div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
-  <!-- 🌐 Navbar -->
-  <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
     <div class="container d-flex align-items-center">
-      {{-- 🔙 Tombol Kembali --}}
+      {{-- Back Button --}}
       @if(request()->is('bmi') || request()->is('profile') || request()->is('questions'))
-        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-sm me-3">
-          <i class="bi bi-arrow-left-circle"></i> Kembali
+        <a href="{{ route('dashboard') }}" class="btn-back me-3">
+          <i class="bi bi-arrow-left"></i>
+          <span>Kembali</span>
         </a>
       @endif
 
-      {{-- 📂 Dropdown Menu di kiri logo --}}
+      {{-- Menu Dropdown --}}
       @if (Request::is('dashboard'))
         <div class="nav-item dropdown me-3">
-          <a class="nav-link dropdown-toggle text-success fw-semibold" href="#" id="mainMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-list-nested me-1"></i>Menu
+          <a class="nav-link dropdown-toggle" href="#" id="mainMenu" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-grid-fill"></i>
           </a>
-          <ul class="dropdown-menu shadow-sm" aria-labelledby="mainMenu">
-            <li><a class="dropdown-item" href="{{ route('questions.index') }}"><i class="bi bi-chat-dots"></i>Pertanyaan</a></li>
+          <ul class="dropdown-menu" aria-labelledby="mainMenu">
+            <li><a class="dropdown-item" href="{{ route('questions.index') }}"><i class="bi bi-chat-dots-fill"></i>Pertanyaan</a></li>
             <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person-circle"></i>Profil</a></li>
-            <li><a class="dropdown-item" href="{{ route('bmi') }}"><i class="bi bi-calculator"></i>Kalkulator BMI</a></li>
+            <li><a class="dropdown-item" href="{{ route('bmi') }}"><i class="bi bi-calculator-fill"></i>Kalkulator BMI</a></li>
           </ul>
         </div>
       @endif
 
-      {{-- 🏷️ Logo QHealth --}}
-      <a class="navbar-brand fw-bold me-auto" href="#"><i class="bi bi-heart-pulse me-1"></i>QHealth</a>
+      {{-- Logo --}}
+      <a class="navbar-brand me-auto" href="#">
+        <i class="bi bi-heart-pulse-fill"></i>
+        QHealth
+      </a>
 
-      {{-- ☰ Toggler & Bagian Kanan --}}
-      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
+      {{-- Toggler --}}
+      <button class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i class="bi bi-list" style="font-size: 22px;"></i>
       </button>
       
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center">
+        <ul class="navbar-nav align-items-center gap-2">
           
           @auth
-          <!-- 🔔 Notifikasi - Hanya tampil jika user sudah login -->
-          <li class="nav-item me-3 position-relative">
-            <a href="#" class="nav-link">
-              <i class="bi bi-bell fs-5"></i>
+          <!-- Notification -->
+          <li class="nav-item">
+            <div class="notification-wrapper">
+              <div class="notification-icon">
+                <i class="bi bi-bell-fill"></i>
+              </div>
               <span class="badge-notification">2</span>
-            </a>
+            </div>
           </li>
           @endauth
 
-          <!-- 📱 Tema -->
-          <li class="nav-item me-3">
+          <!-- Theme Toggle -->
+          <li class="nav-item">
             <button id="themeToggle" class="theme-toggle-btn">
-              <i class="bi bi-moon-fill" id="themeIcon"></i>
+              <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
             </button>
           </li>
           
-          <!-- 👤 User -->
-          <li class="nav-item ms-2">
+          <!-- User Menu -->
+          <li class="nav-item">
             @auth
               <div class="dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <img src="https://ui-avatars.com/api/?name=User&background=22c55e&color=fff" class="rounded-circle avatar" width="30" height="30" alt="User">
+                <a href="#" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                  <img src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff" class="avatar" alt="User">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person"></i>Profil</a></li>
-                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person-fill"></i>Profil</a></li>
+                  <li><hr class="dropdown-divider" style="border-color: var(--card-border);"></li>
                   <li>
                     <a href="{{ route('logout') }}" class="dropdown-item text-danger"
                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -513,12 +543,14 @@
                 </ul>
               </div>
             @else
-              <a href="{{ route('login') }}" class="btn btn-success btn-sm me-1">
-                <i class="bi bi-box-arrow-in-right"></i>Masuk
-              </a>
-              <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-person-plus-fill"></i>Daftar
-              </a>
+              <div class="d-flex gap-2">
+                <a href="{{ route('login') }}" class="btn btn-outline-secondary btn-sm">
+                  <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
+                </a>
+                <a href="{{ route('register') }}" class="btn btn-success btn-sm">
+                  <i class="bi bi-person-plus-fill me-1"></i>Daftar
+                </a>
+              </div>
             @endauth
           </li>
         </ul>
@@ -526,84 +558,38 @@
     </div>
   </nav>
 
-  <!-- 🧩 Konten -->
-  <main class="py-5 container" data-aos="fade-in">
-    @yield('content') {{-- <= Wajib untuk me-render konten --}}
+  <!-- Content -->
+  <main class="py-4 container">
+    @yield('content')
   </main>
 
-  <!-- 🦶 Footer -->
+  <!-- Footer -->
   <footer>
-    <div class="container">
+    <div class="container text-center">
       <div class="footer-logo">QHealth</div>
-      <div class="social-icons d-flex justify-content-center mb-3">
+      <div class="d-flex justify-content-center mb-3">
         <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
         <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
         <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
         <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
       </div>
-      <p class="mb-0 text-muted">&copy; 2025 QHealth. All rights reserved.</p>
+      <p class="mb-0" style="color: var(--text-tertiary); font-size: 12px;">
+        &copy; 2025 QHealth. All rights reserved.
+      </p>
     </div>
   </footer>
 
-  <!-- 🔧 Scripts -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
     AOS.init({ 
-      duration: 800, 
-      easing: 'ease-in-out', 
-      once: true 
+      duration: 500, 
+      easing: 'ease-out',
+      once: true
     });
-  </script>
 
-  <!-- 🌌 Particles Background -->
-  <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <script>
-    particlesJS("particles-js", {
-      particles: {
-        number: { value: 30, density: { enable: true, value_area: 800 } },
-        color: { value: "#60a5fa" },
-        shape: { type: "circle", stroke: { width: 0, color: "#000" }},
-        opacity: { value: 0.3, random: true },
-        size: { value: 10, random: true },
-        line_linked: { enable: true, distance: 150, color: "#93c5fd", opacity: 0.3, width: 1 },
-        move: { enable: true, speed: 1, direction: "none", out_mode: "out" }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: { enable: true, mode: "repulse" },
-          onclick: { enable: true, mode: "push" }
-        },
-        modes: {
-          repulse: { distance: 100, duration: 0.4 },
-          push: { particles_nb: 2 }
-        }
-      },
-      retina_detect: true
-    });
-  </script>
-
-  <!-- 🔽 Scroll Fade -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const elements = document.querySelectorAll(".fade-up");
-      function showOnScroll() {
-        elements.forEach(el => {
-          const rect = el.getBoundingClientRect();
-          if (rect.top < window.innerHeight - 100) {
-            el.classList.add("visible");
-          }
-        });
-      }
-      window.addEventListener("scroll", showOnScroll);
-      showOnScroll();
-    });
-  </script>
-
-  <!-- 🌗 Dark Mode Toggle -->
-  <script>
+    // Dark Mode Toggle
     const toggleBtn = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -611,13 +597,13 @@
 
     if (savedTheme === 'dark') {
       document.body.classList.add('dark-mode');
-      themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+      themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
     }
 
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       const isDark = document.body.classList.contains('dark-mode');
-      themeIcon.classList.toggle('bi-moon-fill', !isDark);
+      themeIcon.classList.toggle('bi-moon-stars-fill', !isDark);
       themeIcon.classList.toggle('bi-sun-fill', isDark);
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });

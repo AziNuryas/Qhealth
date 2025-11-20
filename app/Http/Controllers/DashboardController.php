@@ -1,40 +1,40 @@
 <?php
 
-// app/Http/Controllers/DashboardController.php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Question;
+use App\Models\Answer;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log; // Tambahkan ini
 
 class DashboardController extends Controller
 {
-    // Menampilkan dashboard dengan daftar pertanyaan
+    // Menampilkan dashboard
     public function index()
     {
-        // Ambil semua pertanyaan dengan user yang mengajukan (relasi user)
-        $questions = Question::with('user')->latest()->get();
-
+        $questions = Question::with(['user', 'answers'])->latest()->paginate(10);
         return view('dashboard', compact('questions'));
     }
 
-    // Menyimpan pertanyaan yang diajukan oleh user
+    // Menyimpan pertanyaan baru dari dashboard
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'question' => 'required|string|max:1000',
+            'title' => 'required|string|min:5|max:255',
+            'question' => 'required|string|min:5',
         ]);
 
-        // Simpan pertanyaan ke database
+        // Debug: cek data yang dikirim
+        // Log::info('Data dari form:', $request->all()); // Opsional: uncomment jika perlu debug
+
+        // Menyimpan pertanyaan ke database
         Question::create([
             'user_id' => Auth::id(),
-            'question' => $request->question,
+            'title' => $request->input('title'),
+            'question' => $request->input('question'),
         ]);
 
-        // Redirect kembali ke dashboard dengan pesan sukses
-        return redirect()->route('dashboard')->with('success', 'Pertanyaan berhasil dikirim!');
+        return redirect()->route('dashboard')->with('success', 'Pertanyaan berhasil ditambahkan!');
     }
 }
-

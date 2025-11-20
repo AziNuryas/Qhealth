@@ -9,26 +9,17 @@ class Answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'content',
-        'question_id',
-        'user_id',
-    ];
+    protected $fillable = ['question_id', 'user_id', 'content'];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    // Relationship with User
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    // Relationship with Question
+    // Relasi dengan question
     public function question()
     {
         return $this->belongsTo(Question::class);
+    }
+
+    // Relasi dengan user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
