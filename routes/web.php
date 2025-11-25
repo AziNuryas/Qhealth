@@ -16,17 +16,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ChatController;
 
 
-
-Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-// Test route untuk cek API key
-Route::get('/test-openai', function() {
-    $apiKey = config('services.openai.api_key');
-    return response()->json([
-        'api_key_exists' => !empty($apiKey),
-        'api_key_length' => strlen($apiKey),
-        'api_key_prefix' => substr($apiKey, 0, 10) . '...'
-    ]);
-});
+Route::post('/chat/send', [ChatController::class, 'sendMessage']);
 
 
 // Rute untuk admin (dengan middleware auth dan admin)

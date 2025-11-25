@@ -1,1490 +1,1188 @@
 @extends('layouts.app')
-
 @section('title', 'Dashboard - Qhealth')
-
 @section('content')
 <style>
-    /* ===== VARIABLES ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap');
+    /* ===== VARIABEL WARNA ===== */
     :root {
-        /* Light Mode - Hijau Blur */
-        --primary: #10b981;
-        --primary-glow: rgba(16, 185, 129, 0.15);
-        --primary-light: #a7f3d0;
-        --primary-dark: #059669;
-        --bg-primary: #ffffff;
-        --bg-secondary: #f8fafc;
-        --bg-blur: rgba(255, 255, 255, 0.8);
-        --text-primary: #1f2937;
-        --text-secondary: #6b7280;
-        --text-tertiary: #9ca3af;
-        --card-bg: rgba(255, 255, 255, 0.9);
-        --card-border: rgba(16, 185, 129, 0.1);
-        --shadow-sm: 0 2px 8px rgba(16, 185, 129, 0.08);
-        --shadow-md: 0 4px 16px rgba(16, 185, 129, 0.12);
-        --shadow-lg: 0 8px 32px rgba(16, 185, 129, 0.15);
-        
-        /* Animations */
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        --bg-primary: #f9fbfd;
+        --bg-secondary: #ffffff;
+        --text-primary: #0f172a;
+        --text-secondary: #64748b;
+        --accent-green: #10b981;
+        --accent-green-dark: #047857;
+        --card-bg: rgba(255, 255, 255, 0.78);
+        --card-border: rgba(15, 23, 42, 0.08);
+        --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
     }
-
-    /* ===== BASE STYLES ===== */
+    body.dark-mode {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --card-bg: rgba(30, 41, 59, 0.78);
+        --card-border: rgba(241, 245, 249, 0.12);
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
     body {
         background: var(--bg-primary);
         color: var(--text-primary);
-        transition: var(--transition);
+        font-family: 'Manrope', sans-serif;
+        line-height: 1.5;
+        overflow-x: hidden;
     }
-
-    .dashboard-container {
-        padding: 80px 0 20px 0;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    /* ===== GLASS MORPHISM EFFECT ===== */
-    .glass-card {
-        background: var(--card-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-    }
-
-    .glass-card:hover {
-        box-shadow: var(--shadow-md);
-        transform: translateY(-2px);
-    }
-
-    /* ===== HERO SECTION ===== */
-    .hero-wellness {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 16px;
-        position: relative;
+    /* ===== ANIMATED BACKGROUND ===== */
+    .orb-container {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
         overflow: hidden;
-        margin-bottom: 16px;
-        box-shadow: var(--shadow-lg);
+        pointer-events: none;
     }
-
-    .hero-wellness::before {
-        content: '';
+    .orb {
         position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.09;
+        animation: float 20s ease-in-out infinite;
     }
-
+    .orb-1 {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.4), transparent 70%);
+        top: -200px;
+        left: -200px;
+    }
+    .orb-2 {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 70%);
+        bottom: -150px;
+        right: -150px;
+        animation-delay: 7s;
+    }
     @keyframes float {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        33% { transform: translate(20px, -15px) rotate(120deg); }
-        66% { transform: translate(-15px, 10px) rotate(240deg); }
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(30px, -30px); }
     }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 80px 16px 24px;
     }
-
-    .hero-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .hero-subtitle {
-        font-size: 13px;
-        opacity: 0.9;
-        margin: 0;
-    }
-
-    .hero-decoration {
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 48px;
-        opacity: 0.2;
-        z-index: 1;
-    }
-
-    /* ===== STATS GRID ===== */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .stat-card {
-        background: var(--card-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--card-border);
-        border-radius: 14px;
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-        padding: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        position: relative;
+    /* ===== HERO SECTION ===== */
+    .hero-section {
+        background: linear-gradient(140deg, rgba(16, 185, 129, 0.92), rgba(4, 120, 87, 0.88));
+        border-radius: 24px;
+        padding: 36px;
+        margin-bottom: 28px;
+        box-shadow: var(--shadow-lg);
+        position: realative;
         overflow: hidden;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
     }
-
-    .stat-card:hover {
-        box-shadow: var(--shadow-md);
-        transform: translateY(-2px);
-    }
-
-    .stat-card::before {
-        content: '';
+    .hero-balls {
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--primary), var(--primary-light));
-        transform: scaleX(0);
-        transition: transform 0.3s var(--bounce);
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
     }
-
-    .stat-card:hover::before {
-        transform: scaleX(1);
+    .hero-ball {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.2;
+        animation: floatBall 15s ease-in-out infinite;
     }
-
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
+    .hero-ball-1 {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.3);
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    .hero-ball-2 {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.25);
+        bottom: 25%;
+        right: 15%;
+        animation-delay: 3s;
+    }
+    @keyframes floatBall {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(20px, -20px) scale(1.1); }
+    }
+    .hero-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(12px);
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 14px;
+        letter-spacing: 0.5px;
+        font-family: 'Space Grotesk', sans-serif;
+    }
+    .hero-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 10px;
+        line-height: 1.2;
+        letter-spacing: -0.8px;
+        font-family: 'Manrope', sans-serif;
+    }
+    .hero-subtitle {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.92);
+        margin: 0;
+        max-width: 620px;
+        line-height: 1.5;
+    }
+    /* ===== ALERTS ===== */
+    .alert {
+        padding: 16px 20px;
+        border-radius: 14px;
+        margin-bottom: 18px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        background: var(--primary-glow);
-        color: var(--primary);
-        font-size: 18px;
-        transition: var(--transition);
-    }
-
-    .stat-card:hover .stat-icon {
-        transform: scale(1.1) rotate(5deg);
-        background: var(--primary);
-        color: white;
-    }
-
-    .stat-info {
-        flex: 1;
-    }
-
-    .stat-number {
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--primary);
-        line-height: 1;
-        margin-bottom: 2px;
-    }
-
-    .stat-label {
-        font-size: 11px;
-        color: var(--text-secondary);
+        gap: 14px;
+        font-size: 14px;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid;
     }
-
-    /* ===== SEARCH BAR ===== */
-    .search-container {
+    .alert-success {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.3);
+        color: #10b981;
+    }
+    .alert-error {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+    }
+    /* ===== SEARCH ===== */
+    .search-section {
+        margin-bottom: 26px;
+    }
+    .search-box {
         position: relative;
-        margin-bottom: 16px;
+        max-width: 620px;
     }
-
     .search-input {
         width: 100%;
-        padding: 14px 50px 14px 42px;
-        border: none;
-        background: var(--card-bg);
-        backdrop-filter: blur(20px);
-        border-radius: 14px;
-        border: 1px solid var(--card-border);
-        color: var(--text-primary);
-        font-size: 13px;
-        outline: none;
-        transition: var(--transition);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .search-input:focus {
-        box-shadow: var(--shadow-md);
-        border-color: var(--primary);
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-tertiary);
-        font-size: 16px;
-    }
-
-    .search-btn {
-        position: absolute;
-        right: 6px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 8px 16px;
-        font-weight: 600;
-        font-size: 12px;
-        cursor: pointer;
-        transition: var(--transition);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    .search-btn:hover {
-        transform: translateY(-50%) scale(1.05);
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-    }
-
-    /* ===== MAIN LAYOUT ===== */
-    .main-layout {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 16px;
-        align-items: start;
-    }
-
-    @media (max-width: 1024px) {
-        .main-layout {
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-        
-        .form-section {
-            position: static !important;
-        }
-    }
-
-    /* ===== FORM SECTION - COMPACT ===== */
-    .form-section {
-        position: sticky;
-        top: 90px;
-    }
-
-    .form-card {
+        padding: 15px 22px 15px 52px;
         background: var(--card-bg);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
+        border: 1.5px solid var(--card-border);
+        border-radius: 56px;
+        font-size: 15px;
+        color: var(--text-primary);
+        outline: none;
         box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-        padding: 20px;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .form-card:hover {
+    .search-input:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+    .search-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 20px;
+    }
+    /* ===== LAYOUT ===== */
+    .content-layout {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 26px;
+    }
+    @media (max-width: 1024px) {
+        .content-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+    /* ===== SIDEBAR FORM ===== */
+    .sidebar-form {
+        position: sticky;
+        top: 80px;
+    }
+    .form-card {
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        background: var(--card-bg);
+        border: 1.5px solid var(--card-border);
+        border-radius: 22px;
+        padding: 30px;
         box-shadow: var(--shadow-md);
-        transform: translateY(-2px);
     }
-
+    .form-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
+    }
     .form-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
+        margin-bottom: 26px;
+        text-align: center;
     }
-
     .form-icon {
-        width: 36px;
-        height: 36px;
-        background: var(--primary);
-        border-radius: 10px;
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #10b981, #047857);
+        border-radius: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 16px;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        margin: 0 auto 18px;
+        box-shadow: 0 10px 24px rgba(16, 185, 129, 0.35);
     }
-
+    .form-icon i {
+        font-size: 30px;
+        color: white;
+    }
     .form-title {
-        font-size: 16px;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 10px 0;
+        font-family: 'Manrope', sans-serif;
+    }
+    .form-description {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.6;
+    }
+    .input-group {
+        margin-bottom: 20px;
+    }
+    .input-label {
+        display: block;
+        font-size: 14px;
         font-weight: 700;
         color: var(--text-primary);
-        margin: 0;
+        margin-bottom: 10px;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .form-group {
-        margin-bottom: 14px;
-    }
-
-    .form-label {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 6px;
-        display: block;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-
-    .form-input {
+    .input-field {
         width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--card-border);
-        border-radius: 10px;
-        background: var(--bg-blur);
+        padding: 15px 20px;
+        background: var(--bg-primary);
+        border: 1.8px solid var(--card-border);
+        border-radius: 18px;
+        font-size: 15px;
         color: var(--text-primary);
-        font-size: 13px;
-        transition: var(--transition);
         outline: none;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .form-input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-glow);
-        transform: translateY(-1px);
+    .input-field:focus {
+        background: var(--bg-secondary);
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        transform: translateY(-2px);
     }
-
-    textarea.form-input {
+    textarea.input-field {
         resize: vertical;
-        min-height: 80px;
-        font-family: inherit;
+        min-height: 120px;
     }
-
-    .submit-btn {
+    .btn-submit {
         width: 100%;
-        padding: 12px;
-        border-radius: 10px;
-        background: var(--primary);
+        padding: 17px;
+        background: linear-gradient(135deg, #10b981, #047857);
         color: white;
         border: none;
-        font-size: 13px;
+        border-radius: 18px;
+        font-size: 16px;
         font-weight: 700;
         cursor: pointer;
-        transition: var(--transition);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        gap: 10px;
+        box-shadow: 0 10px 24px rgba(16, 185, 129, 0.35);
+        font-family: 'Manrope', sans-serif;
     }
-
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-    }
-
-    .submit-btn:active {
-        transform: translateY(0);
-    }
-
-    /* ===== QUESTIONS FEED ===== */
-    .feed-section {
-        min-height: 400px;
-    }
-
-    .section-header {
+    /* ===== FEED ===== */
+    .feed-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 16px;
-        gap: 12px;
+        margin-bottom: 22px;
+        gap: 18px;
+        flex-wrap: wrap;
     }
-
-    .section-title {
-        font-size: 16px;
-        font-weight: 700;
+    .feed-title {
+        font-size: 22px;
+        font-weight: 800;
         color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        gap: 8px;
         margin: 0;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .filters-container {
+    .filter-tabs {
         display: flex;
-        gap: 6px;
-    }
-
-    .filter-btn {
-        padding: 6px 12px;
-        border-radius: 16px;
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        color: var(--text-secondary);
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .filter-btn:hover {
-        transform: translateY(-1px);
-        border-color: var(--primary);
-    }
-
-    .filter-btn.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* ===== QUESTION CARDS - COMPACT ===== */
-    .questions-feed {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .question-card {
+        gap: 10px;
         background: var(--card-bg);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--card-border);
+        padding: 6px;
         border-radius: 14px;
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-        overflow: hidden;
+        border: 1.5px solid var(--card-border);
+    }
+    .filter-tab {
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-secondary);
         cursor: pointer;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .question-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
+    .filter-tab.active {
+        background: #10b981;
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
     }
-
-    /* iOS-like tap animation */
-    .question-card:active {
-        transform: scale(0.98);
-        transition: transform 0.1s;
-    }
-
-    .card-header {
-        padding: 16px;
+    /* ===== QUESTION CARD ===== */
+    .questions-list {
         display: flex;
-        align-items: center;
-        gap: 10px;
-        border-bottom: 1px solid var(--card-border);
+        flex-direction: column;
+        gap: 18px;
     }
-
-    .user-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    .question-item {
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        background: var(--card-bg);
+        border: 1.5px solid var(--card-border);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+    .question-item--own {
+        border: 2px solid #10b981;
+        background: rgba(16, 185, 129, 0.06) !important;
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15) !important;
+    }
+    .question-item--own .status-badge {
+        background: rgba(16, 185, 129, 0.2) !important;
+        color: #10b981 !important;
+    }
+    .question-header {
+        padding: 20px 24px;
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+    }
+    .character-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 14px;
         font-weight: 700;
+        font-size: 16px;
         flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        font-family: 'Space Grotesk', sans-serif;
+        letter-spacing: -0.5px;
     }
-
-    .user-info {
+    .question-main {
         flex: 1;
         min-width: 0;
     }
-
+    .question-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
     .user-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: -0.2px;
+        color: var(--text-primary);
+    }
+    .question-time {
         font-size: 13px;
-        font-weight: 700;
-        color: var(--text-primary);
-        line-height: 1.2;
-        margin-bottom: 2px;
-    }
-
-    .post-time {
-        font-size: 10px;
-        color: var(--text-tertiary);
-        font-weight: 500;
-    }
-
-    .status-badge {
-        padding: 4px 10px;
-        border-radius: 16px;
-        font-size: 9px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        flex-shrink: 0;
-    }
-
-    .status-answered {
-        background: var(--primary);
-        color: white;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    }
-
-    .status-waiting {
-        background: #f59e0b;
-        color: white;
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-    }
-
-    .card-content {
-        padding: 16px;
-    }
-
-    .question-title {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 6px;
-        line-height: 1.4;
-    }
-
-    .question-text {
-        font-size: 12px;
         color: var(--text-secondary);
-        line-height: 1.5;
-        margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .card-actions {
-        display: flex;
-        padding: 10px 16px;
-        border-top: 1px solid var(--card-border);
-        gap: 4px;
-    }
-
-    .action-btn {
-        flex: 1;
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 4px;
-        padding: 8px;
-        background: transparent;
-        border: none;
-        border-radius: 8px;
-        color: var(--text-tertiary);
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .action-btn i {
-        font-size: 14px;
-        transition: var(--transition);
-    }
-
-    .action-btn:hover {
-        background: var(--primary-glow);
-        color: var(--primary);
-        transform: translateY(-1px);
-    }
-
-    .action-btn:hover i {
-        transform: scale(1.1);
-    }
-
-    .action-btn.active {
-        color: var(--primary);
-    }
-
-    /* ===== EXPANDABLE ANSWERS - COMPACT ===== */
-    .answers-toggle {
-        padding: 12px 16px;
-        background: linear-gradient(transparent, var(--primary-glow));
-        border-top: 1px solid var(--card-border);
-    }
-
-    .toggle-btn {
-        width: 100%;
-        padding: 10px;
-        background: transparent;
-        border: 1px dashed var(--primary);
-        border-radius: 10px;
-        color: var(--primary);
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
         gap: 6px;
     }
-
-    .toggle-btn:hover {
-        background: var(--primary-glow);
-        border-style: solid;
-        transform: translateY(-1px);
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 14px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-family: 'Space Grotesk', sans-serif;
     }
-
-    .toggle-btn i {
-        transition: transform 0.3s var(--bounce);
+    .status-answered {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
     }
-
-    .toggle-btn.expanded i {
-        transform: rotate(180deg);
+    .status-waiting {
+        background: rgba(147, 51, 234, 0.15);
+        color: #9333ea;
     }
-
-    .answers-container {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    .question-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 10px 0;
+        line-height: 1.4;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .answers-container.expanded {
-        max-height: 500px;
+    .question-content {
+        font-size: 15px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin: 0;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .answer-item {
-        padding: 16px;
-        background: var(--primary-glow);
-        border-top: 1px solid var(--card-border);
-        animation: slideDown 0.3s var(--bounce);
+    .question-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        border-top: 1.5px solid var(--card-border);
     }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-8px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .action-buttons {
+        display: flex;
+        gap: 10px;
     }
-
-    .answer-header {
+    .action-btn {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 8px;
-    }
-
-    .answer-avatar {
-        width: 28px;
-        height: 28px;
-        border-radius: 7px;
-        background: var(--primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .answer-author {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--primary);
-    }
-
-    .answer-time {
-        font-size: 10px;
-        color: var(--text-tertiary);
-        margin-left: auto;
-    }
-
-    .answer-text {
-        font-size: 12px;
-        color: var(--text-secondary);
-        line-height: 1.5;
-        margin: 0;
-    }
-
-    /* ===== ALERTS ===== */
-    .alert {
-        padding: 14px 16px;
-        border-radius: 14px;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        padding: 8px 16px;
+        border-radius: 50px;
         font-size: 13px;
-        font-weight: 600;
-        animation: slideIn 0.3s var(--bounce);
+        font-weight: 700;
+        cursor: pointer;
+        border: 1.8px solid transparent;
+        background: transparent;
+        font-family: 'Manrope', sans-serif;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-15px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    .like-btn {
+        color: #3b82f6;
+        border-color: rgba(59, 130, 246, 0.25);
     }
-
-    .alert-success {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.2);
-        color: var(--primary);
+    .like-btn.active {
+        background: rgba(59, 130, 246, 0.15);
+        border-color: #3b82f6;
     }
-
-    .alert-error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: #ef4444;
+    .like-btn i::before {
+        content: "👍";
+        font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+        font-size: 16px !important;
     }
-
-    /* ===== EMPTY STATE ===== */
-    .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        background: var(--card-bg);
-        border-radius: 16px;
-        border: 2px dashed var(--card-border);
+    .bookmark-btn {
+        color: #8b5cf6;
+        border-color: rgba(139, 92, 246, 0.25);
     }
-
-    .empty-icon {
-        font-size: 48px;
-        color: var(--primary);
-        opacity: 0.3;
+    .bookmark-btn.active {
+        background: rgba(139, 92, 246, 0.15);
+        border-color: #8b5cf6;
+    }
+    .bookmark-btn i {
+        font-size: 16px;
+    }
+    .view-answers-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        background: #10b981;
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        font-family: 'Manrope', sans-serif;
+    }
+    .answers-list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.45s ease;
+    }
+    .answers-list.expanded {
+        max-height: 600px;
+        overflow-y: auto;
+        border-top: 1.5px solid var(--card-border);
+    }
+    .answer-item {
+        padding: 20px 24px;
+        border-top: 1.5px solid var(--card-border);
+        background: var(--bg-primary);
+    }
+    .answer-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
         margin-bottom: 12px;
     }
-
-    .empty-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 6px;
-    }
-
-    .empty-subtitle {
-        font-size: 13px;
-        color: var(--text-secondary);
-    }
-
-    /* ===== CHATBOT - FIXED & COMPACT ===== */
-    .chatbot-floating {
-        position: fixed;
-        bottom: 80px;
-        right: 20px;
-        z-index: 9998;
-    }
-
-    .chatbot-fab {
-        width: 50px;
-        height: 50px;
+    .answer-avatar {
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border: none;
         display: flex;
         align-items: center;
         justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        font-family: 'Space Grotesk', sans-serif;
+    }
+    .answer-author {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text-primary);
+    }
+    .answer-time {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-left: auto;
+    }
+    .answer-content {
+        font-size: 15px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin: 0;
+        font-family: 'Manrope', sans-serif;
+        padding-left: 48px;
+    }
+    /* EMPTY STATE */
+    .empty-state {
+        text-align: center;
+        padding: 64px 24px;
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        background: var(--card-bg);
+        border: 2px dashed var(--card-border);
+        border-radius: 20px;
+    }
+    .empty-icon {
+        font-size: 52px;
+        color: var(--text-secondary);
+        margin-bottom: 18px;
+        opacity: 0.5;
+    }
+    .empty-title {
         font-size: 20px;
-        cursor: pointer;
-        box-shadow: var(--shadow-lg);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-        z-index: 9999;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 10px 0;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .chatbot-fab::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, transparent, rgba(255,255,255,0.2), transparent);
-        transform: translateX(-100%);
-        transition: transform 0.6s;
+    .empty-text {
+        font-size: 15px;
+        color: var(--text-secondary);
+        margin: 0;
+        font-family: 'Manrope', sans-serif;
     }
-
-    .chatbot-fab:hover {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
-    }
-
-    .chatbot-fab:hover::before {
-        transform: translateX(100%);
-    }
-
+    /* CHATBOT */
     .chatbot-panel {
         position: fixed;
-        bottom: 140px;
-        right: 20px;
-        width: 320px;
-        max-width: calc(100vw - 40px);
-        height: 400px;
-        max-height: calc(100vh - 200px);
+        bottom: 90px;
+        right: 26px;
+        width: 380px;
+        max-width: calc(100vw - 52px);
+        height: 500px;
+        max-height: calc(100vh - 140px);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
         background: var(--card-bg);
-        backdrop-filter: blur(20px);
-        border-radius: 16px;
-        border: 1px solid var(--card-border);
+        border: 1.5px solid var(--card-border);
+        border-radius: 18px;
         box-shadow: var(--shadow-lg);
         display: none;
         flex-direction: column;
         overflow: hidden;
-        animation: panelPop 0.3s var(--bounce);
-        z-index: 9997;
+        z-index: 9999;
     }
-
-    @keyframes panelPop {
-        from {
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-    }
-
-    .chatbot-panel.active {
-        display: flex;
-    }
-
     .chatbot-header {
-        padding: 16px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        padding: 18px 22px;
+        background: linear-gradient(135deg, #10b981, #047857);
         color: white;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-
     .chatbot-title {
-        font-size: 14px;
+        font-size: 17px;
         font-weight: 700;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        font-family: 'Manrope', sans-serif;
     }
-
     .chatbot-close {
-        width: 28px;
-        height: 28px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
         background: rgba(255, 255, 255, 0.2);
         border: none;
-        border-radius: 50%;
         color: white;
         cursor: pointer;
-        transition: var(--transition);
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    .chatbot-close:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: rotate(90deg);
-    }
-
     .chatbot-messages {
         flex: 1;
-        padding: 16px;
+        padding: 18px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 14px;
+        background: var(--bg-primary);
     }
-
     .chat-message {
         max-width: 85%;
-        padding: 10px 12px;
-        border-radius: 14px;
-        font-size: 12px;
-        line-height: 1.4;
-        animation: messageSlide 0.3s var(--bounce);
+        padding: 14px 18px;
+        border-radius: 18px;
+        font-size: 15px;
+        line-height: 1.5;
+        font-family: 'Manrope', sans-serif;
     }
-
-    @keyframes messageSlide {
-        from {
-            opacity: 0;
-            transform: translateY(8px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .chat-message-user {
+    .chat-message.user {
         align-self: flex-end;
-        background: var(--primary);
+        background: linear-gradient(135deg, #10b981, #047857);
         color: white;
-        border-bottom-right-radius: 4px;
     }
-
-    .chat-message-bot {
+    .chat-message.bot {
         align-self: flex-start;
-        background: var(--primary-glow);
+        background: var(--card-bg);
         color: var(--text-primary);
-        border-bottom-left-radius: 4px;
+        border: 1.5px solid var(--card-border);
     }
-
-    .suggestion-pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 10px;
-    }
-
-    .suggestion-pill {
-        padding: 6px 10px;
-        background: var(--primary-glow);
-        border: 1px solid var(--card-border);
-        border-radius: 14px;
-        font-size: 10px;
-        font-weight: 600;
-        color: var(--text-primary);
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .suggestion-pill:hover {
-        background: var(--primary);
-        color: white;
-        transform: translateY(-1px);
-    }
-
     .chatbot-input-area {
-        padding: 12px;
-        border-top: 1px solid var(--card-border);
+        padding: 18px;
+        border-top: 1.5px solid var(--card-border);
         display: flex;
-        gap: 8px;
+        gap: 10px;
+        background: var(--bg-secondary);
     }
-
     .chatbot-input {
         flex: 1;
-        padding: 10px 12px;
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
-        background: var(--bg-blur);
+        padding: 12px 18px;
+        background: var(--bg-primary);
+        border: 1.5px solid var(--card-border);
+        border-radius: 56px;
+        font-size: 15px;
         color: var(--text-primary);
-        font-size: 12px;
         outline: none;
-        transition: var(--transition);
+        font-family: 'Manrope', sans-serif;
     }
-
-    .chatbot-input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-glow);
-    }
-
     .chatbot-send {
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
-        background: var(--primary);
+        background: linear-gradient(135deg, #10b981, #047857);
         color: white;
         border: none;
-        cursor: pointer;
-        transition: var(--transition);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        cursor: pointer;
     }
-
-    .chatbot-send:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    .chatbot-toggle {
+        position: fixed;
+        bottom: 26px;
+        right: 26px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #10b981, #047857);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(16, 185, 129, 0.45);
+        z-index: 9999;
     }
-
-    /* ===== RESPONSIVE DESIGN ===== */
+    /* ANIMASI TITIK MENGETIK */
+    .typing-dots {
+        display: inline-block;
+        margin-left: 4px;
+    }
+    .typing-dots span {
+        animation: typing 1.4s infinite;
+        opacity: 0;
+    }
+    .typing-dots span:nth-child(1) { animation-delay: 0s; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+    /* AVATAR COLORS */
+    .avatar-orange { background: #f97316; }
+    .avatar-purple { background: #a855f7; }
+    .avatar-pink { background: #ec4899; }
+    .avatar-slate { background: #64748b; }
+    .avatar-blue { background: #3b82f6; }
+    .avatar-lime { background: #84cc16; }
+    .avatar-amber { background: #f59e0b; }
+    .avatar-slate-dark { background: #475569; }
+    .avatar-blue-dark { background: #2563eb; }
+    .avatar-red-dark { background: #dc2626; }
+    .avatar-green { background: #22c55e; }
+    .avatar-red { background: #ef4444; }
+    .avatar-green-dark { background: #059669; }
+    .avatar-black { background: #000000; }
+    .avatar-purple-deep { background: #7e22ce; }
+    .avatar-green-deep { background: #059669; }
     @media (max-width: 768px) {
-        .dashboard-container {
-            padding: 80px 12px 20px;
-        }
-        
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .section-header {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-        
-        .filters-container {
-            justify-content: center;
-        }
-        
-        .chatbot-panel {
-            right: 12px;
-            bottom: 120px;
-            width: calc(100vw - 24px);
-            height: 350px;
-        }
-        
-        .chatbot-floating {
-            right: 12px;
-            bottom: 70px;
-        }
-        
-        .main-layout {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .hero-title {
-            font-size: 18px;
-        }
-        
-        .hero-subtitle {
-            font-size: 12px;
-        }
-        
-        .form-card {
-            padding: 16px;
-        }
-        
-        .card-header {
-            padding: 12px;
-        }
-        
-        .card-content {
-            padding: 12px;
-        }
+        .hero-title { font-size: 26px; }
+        .content-layout { grid-template-columns: 1fr; }
+        .question-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .question-footer { flex-direction: column; gap: 12px; align-items: stretch; }
+        .action-buttons { justify-content: center; }
+        .view-answers-btn { width: 100%; justify-content: center; }
+        .chatbot-panel { width: calc(100vw - 32px); right: 16px; bottom: 80px; }
+        .chatbot-toggle { bottom: 16px; right: 16px; }
     }
 </style>
-
+<!-- Animated Background -->
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
 <div class="dashboard-container">
-    {{-- Hero Section --}}
-    <div class="hero-wellness">
-        <div class="hero-content">
-            <div class="hero-title">Selamat Datang di QHealth</div>
-            <div class="hero-subtitle">Konsultasi kesehatan Anda dimulai dari sini</div>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-balls">
+            <div class="hero-ball hero-ball-1"></div>
+            <div class="hero-ball hero-ball-2"></div>
         </div>
-        <div class="hero-decoration">
-            <i class="bi bi-heart-pulse-fill"></i>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-stars"></i> DASHBOARD ANONIM
+            </div>
+            <h1 class="hero-title">👋 Selamat Datang di QHealth!</h1>
+            <p class="hero-subtitle">
+                Ajukan pertanyaan kesehatan secara anonim dan dapatkan jawaban dari komunitas serta tenaga medis profesional.
+            </p>
         </div>
     </div>
-
-    {{-- Alerts --}}
+    <!-- Alerts -->
     @if(session('success'))
         <div class="alert alert-success">
             <i class="bi bi-check-circle-fill"></i>
             {{ session('success') }}
         </div>
     @endif
-
     @if($errors->any())
         <div class="alert alert-error">
             <i class="bi bi-exclamation-triangle-fill"></i>
             Terdapat kesalahan dalam pengisian form.
         </div>
     @endif
-
-    {{-- Stats Grid --}}
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="bi bi-question-circle"></i>
-            </div>
-            <div class="stat-info">
-                <div class="stat-number">{{ $questions->count() }}</div>
-                <div class="stat-label">Total Pertanyaan</div>
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="bi bi-chat-left-text"></i>
-            </div>
-            <div class="stat-info">
-                <?php
-                    $answeredCount = 0;
-                    foreach ($questions as $q) {
-                        if ($q->answers && $q->answers->count() > 0) {
-                            $answeredCount++;
-                        }
-                    }
-                ?>
-                <div class="stat-number">{{ $answeredCount }}</div>
-                <div class="stat-label">Pertanyaan Terjawab</div>
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="bi bi-people"></i>
-            </div>
-            <div class="stat-info">
-                <?php
-                    $uniqueUsers = $questions->pluck('user_id')->unique()->count();
-                ?>
-                <div class="stat-number">{{ $uniqueUsers }}</div>
-                <div class="stat-label">Pengguna Aktif</div>
-            </div>
+    <!-- Search -->
+    <div class="search-section">
+        <div class="search-box">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Cari pertanyaan kesehatan...">
         </div>
     </div>
-
-    {{-- Search --}}
-    <div class="search-container">
-        <i class="bi bi-search search-icon"></i>
-        <input type="text" class="search-input" placeholder="Cari pertanyaan kesehatan..." id="searchInput">
-        <button class="search-btn">Cari</button>
-    </div>
-
-    {{-- Main Layout --}}
-    <div class="main-layout">
-        {{-- Sidebar Form --}}
-        <div class="form-section">
+    <!-- Main Content -->
+    <div class="content-layout">
+        <!-- Sidebar Form -->
+        <aside class="sidebar-form">
             <div class="form-card">
                 <div class="form-header">
                     <div class="form-icon">
-                        <i class="bi bi-plus-circle"></i>
+                        <i class="bi bi-chat-dots-fill"></i>
                     </div>
-                    <h3 class="form-title">Ajukan Pertanyaan</h3>
+                    <h2 class="form-title">Buat Pertanyaan Anonim</h2>
+                    <p class="form-description">Pertanyaan Anda akan ditampilkan dengan nama karakter acak — identitas tetap aman.</p>
                 </div>
-                
                 <form action="{{ route('questions.store') }}" method="POST">
                     @csrf
-                    <div class="form-group">
-                        <label class="form-label">Judul Pertanyaan</label>
-                        <input type="text" name="title" class="form-input" 
-                               placeholder="Masukkan judul pertanyaan" value="{{ old('title') }}" required>
+                    <div class="input-group">
+                        <label class="input-label">Judul Pertanyaan</label>
+                        <input type="text" name="title" class="input-field" 
+                               placeholder="Contoh: Apakah gejala ini berbahaya?" value="{{ old('title') }}" required>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Isi Pertanyaan</label>
-                        <textarea name="question" class="form-input" 
-                                  placeholder="Jelaskan pertanyaan Anda secara detail..." required>{{ old('question') }}</textarea>
+                    <div class="input-group">
+                        <label class="input-label">Detail Pertanyaan</label>
+                        <textarea name="question" class="input-field" 
+                                  placeholder="Jelaskan gejala atau kondisi Anda secara detail..." required>{{ old('question') }}</textarea>
                     </div>
-                    
-                    <button type="submit" class="submit-btn">
-                        <i class="bi bi-send"></i>
-                        Kirim Pertanyaan
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-send-fill"></i>
+                        <span>Kirim Pertanyaan</span>
                     </button>
                 </form>
             </div>
-        </div>
-
-        {{-- Questions Feed --}}
-        <div class="feed-section">
-            <div class="section-header">
-                <h3 class="section-title">
-                    <i class="bi bi-list-ul"></i>
-                    Diskusi Terbaru
-                </h3>
-                <div class="filters-container">
-                    <button class="filter-btn active" data-filter="all">Semua</button>
-                    <button class="filter-btn" data-filter="answered">Terjawab</button>
-                    <button class="filter-btn" data-filter="unanswered">Belum Dijawab</button>
+        </aside>
+        <!-- Feed -->
+        <main class="feed-container">
+            <div class="feed-header">
+                <h2 class="feed-title">Diskusi Terbaru</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">Semua</button>
+                    <button class="filter-tab" data-filter="answered">Terjawab</button>
+                    <button class="filter-tab" data-filter="unanswered">Belum Dijawab</button>
                 </div>
             </div>
-
-            <div class="questions-feed">
+            <div class="questions-list">
+                @php
+                    $characters = [
+                        ['name' => 'Naruto Uzumaki', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Sasuke Uchiha', 'avatar_class' => 'avatar-purple'],
+                        ['name' => 'Sakura Haruno', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Kakashi Hatake', 'avatar_class' => 'avatar-slate'],
+                        ['name' => 'Hinata Hyuga', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Jiraiya', 'avatar_class' => 'avatar-lime'],
+                        ['name' => 'Tsunade', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Orochimaru', 'avatar_class' => 'avatar-slate-dark'],
+                        ['name' => 'Itachi Uchiha', 'avatar_class' => 'avatar-blue-dark'],
+                        ['name' => 'Madara Uchiha', 'avatar_class' => 'avatar-red-dark'],
+                        ['name' => 'Boruto Uzumaki', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Sarada Uchiha', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Mitsuki', 'avatar_class' => 'avatar-green'],
+                        ['name' => 'Monkey D. Luffy', 'avatar_class' => 'avatar-red'],
+                        ['name' => 'Roronoa Zoro', 'avatar_class' => 'avatar-purple'],
+                        ['name' => 'Nami', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Usopp', 'avatar_class' => 'avatar-green-dark'],
+                        ['name' => 'Sanji', 'avatar_class' => 'avatar-red'],
+                        ['name' => 'Tony Tony Chopper', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Nico Robin', 'avatar_class' => 'avatar-purple'],
+                        ['name' => 'Franky', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Brook', 'avatar_class' => 'avatar-slate'],
+                        ['name' => 'Jinbe', 'avatar_class' => 'avatar-green-deep'],
+                        ['name' => 'Shanks', 'avatar_class' => 'avatar-red-dark'],
+                        ['name' => 'Portgas D. Ace', 'avatar_class' => 'avatar-red'],
+                        ['name' => 'Marshall D. Teach', 'avatar_class' => 'avatar-black'],
+                        ['name' => 'Asta', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Yuno', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Noelle Silva', 'avatar_class' => 'avatar-green-deep'],
+                        ['name' => 'Yami Sukehiro', 'avatar_class' => 'avatar-black'],
+                        ['name' => 'Mimosa Vermillion', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Luck Voltia', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Magna Swing', 'avatar_class' => 'avatar-purple'],
+                        ['name' => 'Vanessa Enoteca', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Finral Roulacase', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Julius Novachrono', 'avatar_class' => 'avatar-slate-dark'],
+                        ['name' => 'Sung Jin-Woo', 'avatar_class' => 'avatar-purple-deep'],
+                        ['name' => 'Cha Hae-In', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Yoo Jin-Ho', 'avatar_class' => 'avatar-slate'],
+                        ['name' => 'Choi Jong-In', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Baek Yoon-Ho', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Thomas Andre', 'avatar_class' => 'avatar-green-dark'],
+                        ['name' => 'Liu Zhigang', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Berada', 'avatar_class' => 'avatar-green-deep'],
+                        ['name' => 'BoBoiBoy', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Yaya', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Ying', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Gopal', 'avatar_class' => 'avatar-green'],
+                        ['name' => 'Fang', 'avatar_class' => 'avatar-purple'],
+                        ['name' => 'Papa Zola', 'avatar_class' => 'avatar-slate-dark'],
+                        ['name' => 'Tok Aba', 'avatar_class' => 'avatar-green-deep'],
+                        ['name' => 'Adu Du', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Probe', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Computer', 'avatar_class' => 'avatar-slate-dark'],
+                        ['name' => 'Upin', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Ipin', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Kakak Ros', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Opah', 'avatar_class' => 'avatar-slate'],
+                        ['name' => 'Mail', 'avatar_class' => 'avatar-green-dark'],
+                        ['name' => 'Ehsan', 'avatar_class' => 'avatar-purple'],
+                        ['name' => 'Fizi', 'avatar_class' => 'avatar-pink'],
+                        ['name' => 'Mei Mei', 'avatar_class' => 'avatar-amber'],
+                        ['name' => 'Susanti', 'avatar_class' => 'avatar-blue'],
+                        ['name' => 'Jarjit Singh', 'avatar_class' => 'avatar-orange'],
+                        ['name' => 'Emon', 'avatar_class' => 'avatar-green']
+                    ];
+                    $profiles = session()->get('qhealth_v3_profiles', []);
+                    $answers = session()->get('qhealth_v3_answers', []);
+                @endphp
                 @forelse($questions as $q)
-                    <?php
+                    @php
                         $isAnswered = $q->answers && $q->answers->count() > 0;
-                        $questionClass = $isAnswered ? 'answered-question' : 'unanswered-question';
-                    ?>
-                    <div class="question-card {{ $questionClass }}">
-                        {{-- Header --}}
-                        <div class="card-header">
-                            <div class="user-avatar">
-                                {{ strtoupper(substr($q->user->name ?? 'A', 0, 1)) }}
+                        $qid = 'q_' . $q->id;
+                        if (!isset($profiles[$qid])) {
+                            $rand = $characters[array_rand($characters)];
+                            $profiles[$qid] = $rand;
+                            session()->put('qhealth_v3_profiles', $profiles);
+                        }
+                        $profile = $profiles[$qid];
+                    @endphp
+                    <article class="question-item {{ $isAnswered ? 'answered-question' : 'unanswered-question' }} {{ $q->user_id == auth()->id() ? 'question-item--own' : '' }}" data-id="{{ $q->id }}">
+                        <div class="question-header">
+                            <div class="character-avatar {{ $profile['avatar_class'] }}">
+                                {{ $profile['name'][0] }}
                             </div>
-                            <div class="user-info">
-                                <div class="user-name">{{ $q->user->name ?? 'Anonim' }}</div>
-                                <div class="post-time">
-                                    {{ $q->created_at->diffForHumans() }}
+                            <div class="question-main">
+                                <div class="question-meta">
+                                    <span class="user-name">{{ $profile['name'] }}</span>
+                                    <span class="question-time">
+                                        <i class="bi bi-clock"></i>
+                                        {{ $q->created_at->diffForHumans() }}
+                                    </span>
+                                    <span class="status-badge {{ $isAnswered ? 'status-answered' : 'status-waiting' }}">
+                                        {{ $isAnswered ? '✓ Terjawab' : '• Menunggu' }}
+                                    </span>
                                 </div>
+                                <h3 class="question-title">{{ $q->title }}</h3>
+                                <p class="question-content">{{ $q->question }}</p>
                             </div>
-                            <span class="status-badge {{ $isAnswered ? 'status-answered' : 'status-waiting' }}">
-                                {{ $isAnswered ? 'Terjawab' : 'Menunggu' }}
-                            </span>
                         </div>
-
-                        {{-- Content --}}
-                        <div class="card-content">
-                            <div class="question-title">{{ $q->title }}</div>
-                            <p class="question-text">{{ Str::limit($q->question, 120) }}</p>
-                        </div>
-
-                        {{-- Actions --}}
-                        <div class="card-actions">
-                            <button class="action-btn like-btn" data-id="{{ $q->id }}">
-                                <i class="bi bi-heart"></i>
-                                <span>Suka</span>
-                            </button>
-                            <button class="action-btn comment-btn" data-id="{{ $q->id }}">
-                                <i class="bi bi-chat"></i>
-                                <span>Komentar</span>
-                            </button>
-                            <button class="action-btn save-btn" data-id="{{ $q->id }}">
-                                <i class="bi bi-bookmark"></i>
-                                <span>Simpan</span>
-                            </button>
-                        </div>
-
-                        {{-- Answers Toggle --}}
-                        @if($isAnswered)
-                            <div class="answers-toggle">
-                                <button class="toggle-btn" data-card-id="{{ $q->id }}">
-                                    <i class="bi bi-chevron-down"></i>
-                                    <span>Lihat {{ $q->answers->count() }} Jawaban</span>
+                        <div class="question-footer">
+                            <div class="action-buttons">
+                                <button class="action-btn like-btn" data-id="{{ $q->id }}">
+                                    <i></i>
+                                    <span>0</span>
+                                </button>
+                                <button class="action-btn bookmark-btn" data-id="{{ $q->id }}">
+                                    <i class="bi bi-bookmark"></i>
+                                    <span>0</span>
                                 </button>
                             </div>
-
-                            <div class="answers-container" id="answers-{{ $q->id }}">
+                            @if($isAnswered)
+                                <button class="view-answers-btn" data-id="{{ $q->id }}">
+                                    <span>{{ $q->answers->count() }} Jawaban</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            @endif
+                        </div>
+                        @if($isAnswered)
+                            <div class="answers-list" id="answers-{{ $q->id }}">
                                 @foreach($q->answers as $answer)
+                                    @php
+                                        $aid = 'a_' . $answer->id;
+                                        if (!isset($answers[$aid])) {
+                                            $randAns = $characters[array_rand($characters)];
+                                            $answers[$aid] = $randAns;
+                                            session()->put('qhealth_v3_answers', $answers);
+                                        }
+                                        $ansProfile = $answers[$aid];
+                                    @endphp
                                     <div class="answer-item">
                                         <div class="answer-header">
-                                            <div class="answer-avatar">
-                                                {{ strtoupper(substr($answer->user->name ?? 'D', 0, 1)) }}
+                                            <div class="answer-avatar {{ $ansProfile['avatar_class'] }}">
+                                                {{ $ansProfile['name'][0] }}
                                             </div>
-                                            <span class="answer-author">{{ $answer->user->name ?? 'Dokter' }}</span>
+                                            <span class="answer-author">{{ $ansProfile['name'] }}</span>
                                             <span class="answer-time">{{ $answer->created_at->diffForHumans() }}</span>
                                         </div>
-                                        <p class="answer-text">{{ $answer->content }}</p>
+                                        <p class="answer-content">{{ $answer->content }}</p>
                                     </div>
                                 @endforeach
                             </div>
                         @endif
-                    </div>
+                    </article>
                 @empty
                     <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="bi bi-question-circle"></i>
-                        </div>
-                        <div class="empty-title">Belum ada pertanyaan</div>
-                        <div class="empty-subtitle">Jadilah yang pertama mengajukan pertanyaan!</div>
+                        <div class="empty-icon">🔒</div>
+                        <h3 class="empty-title">Belum ada pertanyaan</h3>
+                        <p class="empty-text">Jadilah yang pertama bertanya — dengan nama karakter favoritmu!</p>
                     </div>
                 @endforelse
             </div>
-        </div>
+        </main>
     </div>
 </div>
-
-{{-- Chatbot --}}
-<div class="chatbot-floating">
-    <div class="chatbot-panel" id="chatbotPanel">
-        <div class="chatbot-header">
-            <div class="chatbot-title">
-                <i class="bi bi-robot"></i>
-                QHealth Assistant
-            </div>
-            <button class="chatbot-close" id="chatbotClose">
-                <i class="bi bi-x-lg"></i>
-            </button>
+<!-- CHATBOT -->
+<div class="chatbot-panel" id="chatbotPanel">
+    <div class="chatbot-header">
+        <div class="chatbot-title">
+            <i class="bi bi-robot"></i> QHealth AI Assistant
         </div>
-        
-        <div class="chatbot-messages" id="chatbotMessages">
-            <div class="chat-message chat-message-bot">
-                👋 Halo! Saya QHealth Assistant. Saya di sini untuk membantu menjawab pertanyaan seputar kesehatan. Apa yang bisa saya bantu?
-            </div>
-            
-            <div class="suggestion-pills">
-                <div class="suggestion-pill" data-question="Apa gejala umum flu?">Gejala flu</div>
-                <div class="suggestion-pill" data-question="Bagaimana cara menjaga kesehatan jantung?">Kesehatan jantung</div>
-                <div class="suggestion-pill" data-question="Tips pola makan sehat">Pola makan</div>
-            </div>
-        </div>
-        
-        <div class="chatbot-input-area">
-            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Ketik pertanyaan...">
-            <button class="chatbot-send" id="chatbotSend">
-                <i class="bi bi-send"></i>
-            </button>
+        <button class="chatbot-close" id="chatbotClose">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+    <div class="chatbot-messages" id="chatbotMessages">
+        <div class="chat-message bot">
+            Halo! Saya QHealth AI. Ada yang bisa saya bantu? 😊
         </div>
     </div>
-    
-    <button class="chatbot-fab" id="chatbotFab">
-        <i class="bi bi-robot"></i>
-    </button>
+    <div class="chatbot-input-area">
+        <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Ketik pesan...">
+        <button class="chatbot-send" id="chatbotSend">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    </div>
 </div>
+<button class="chatbot-toggle" id="chatbotToggle">
+    <i class="bi bi-chat-dots-fill"></i>
+</button>
 
 <script>
-    // Filter functionality
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(p => p.classList.remove('active'));
-            this.classList.add('active');
-            
-            const filter = this.getAttribute('data-filter');
-            document.querySelectorAll('.question-card').forEach(card => {
-                if (filter === 'all') {
-                    card.style.display = 'block';
-                } else if (filter === 'answered' && card.classList.contains('answered-question')) {
-                    card.style.display = 'block';
-                } else if (filter === 'unanswered' && card.classList.contains('unanswered-question')) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+document.addEventListener('DOMContentLoaded', function() {
+    // ===== CHATBOT DENGAN AI NYATA + ANIMASI =====
+    const toggle = document.getElementById('chatbotToggle');
+    const panel = document.getElementById('chatbotPanel');
+    const close = document.getElementById('chatbotClose');
+    const send = document.getElementById('chatbotSend');
+    const input = document.getElementById('chatbotInput');
+    const messages = document.getElementById('chatbotMessages');
+
+    if (toggle) toggle.addEventListener('click', () => {
+        panel.style.display = 'flex';
+        input?.focus();
+    });
+    if (close) close.addEventListener('click', () => panel.style.display = 'none');
+
+    function addMessage(text, isUser = false) {
+        const div = document.createElement('div');
+        div.className = `chat-message ${isUser ? 'user' : 'bot'}`;
+        div.innerHTML = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\n/g, '<br>');
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function sendChatMessage() {
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        addMessage(msg, true);
+        input.value = '';
+        input.disabled = true;
+        send.disabled = true;
+
+        // Animasi titik-titik
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'chat-message bot';
+        typingDiv.innerHTML = 'Mengetik<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
+        messages.appendChild(typingDiv);
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+            const response = await fetch('/chat/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ message: msg })
             });
-        });
-    });
 
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchTerm = this.value.toLowerCase();
-        document.querySelectorAll('.question-card').forEach(card => {
-            const title = card.querySelector('.question-title').innerText.toLowerCase();
-            const content = card.querySelector('.question-text').innerText.toLowerCase();
-            card.style.display = (title.includes(searchTerm) || content.includes(searchTerm)) ? 'block' : 'none';
-        });
-    });
+            const data = await response.json();
+            typingDiv.remove(); // Hapus animasi
 
-    // Toggle answers with smooth animation
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const cardId = this.getAttribute('data-card-id');
-            const answersContainer = document.getElementById('answers-' + cardId);
-            
-            answersContainer.classList.toggle('expanded');
-            this.classList.toggle('expanded');
-            
-            const span = this.querySelector('span');
-            if (answersContainer.classList.contains('expanded')) {
-                span.textContent = 'Sembunyikan Jawaban';
+            if (data.reply) {
+                addMessage(data.reply);
             } else {
-                const count = answersContainer.querySelectorAll('.answer-item').length;
-                span.textContent = 'Lihat ' + count + ' Jawaban';
+                addMessage("Maaf, saya tidak bisa menjawab saat ini. Coba lagi nanti!");
             }
-        });
-    });
-
-    // Interactive buttons with iOS-like feedback
-    document.querySelectorAll('.action-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            // Add ripple effect
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(16, 185, 129, 0.3);
-                transform: scale(0);
-                animation: ripple 0.6s linear;
-                width: ${size}px;
-                height: ${size}px;
-                left: ${x}px;
-                top: ${y}px;
-            `;
-            
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-            
-            // Toggle active state
-            if (this.classList.contains('like-btn') || this.classList.contains('save-btn')) {
-                this.classList.toggle('active');
-                const icon = this.querySelector('i');
-                if (this.classList.contains('active')) {
-                    if (this.classList.contains('like-btn')) {
-                        icon.className = 'bi bi-heart-fill';
-                    } else {
-                        icon.className = 'bi bi-bookmark-fill';
-                    }
-                } else {
-                    if (this.classList.contains('like-btn')) {
-                        icon.className = 'bi bi-heart';
-                    } else {
-                        icon.className = 'bi bi-bookmark';
-                    }
-                }
-            }
-        });
-    });
-
-    // Chatbot functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const chatbotFab = document.getElementById('chatbotFab');
-        const chatbotPanel = document.getElementById('chatbotPanel');
-        const chatbotClose = document.getElementById('chatbotClose');
-        const chatbotMessages = document.getElementById('chatbotMessages');
-        const chatbotInput = document.getElementById('chatbotInput');
-        const chatbotSend = document.getElementById('chatbotSend');
-
-        // Toggle chatbot
-        chatbotFab.addEventListener('click', function() {
-            chatbotPanel.classList.toggle('active');
-            if (chatbotPanel.classList.contains('active')) {
-                chatbotInput.focus();
-            }
-        });
-
-        // Close chatbot
-        chatbotClose.addEventListener('click', function() {
-            chatbotPanel.classList.remove('active');
-        });
-
-        // Send message
-        function sendMessage() {
-            const message = chatbotInput.value.trim();
-            if (message === '') return;
-
-            addMessage(message, 'user');
-            chatbotInput.value = '';
-            
-            // Simulate bot response
-            setTimeout(() => {
-                addMessage('Terima kasih atas pertanyaannya. Tim dokter kami akan segera merespons melalui platform ini.', 'bot');
-            }, 1000);
+        } catch (error) {
+            console.error('Chatbot Error:', error);
+            typingDiv.remove();
+            addMessage("Gagal terhubung ke AI. Periksa koneksi internetmu!");
+        } finally {
+            input.disabled = false;
+            send.disabled = false;
+            input.focus();
         }
+    }
 
-        // Add message
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message chat-message-${sender}`;
-            messageDiv.textContent = text;
-            chatbotMessages.appendChild(messageDiv);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
-
-        // Send on click
-        chatbotSend.addEventListener('click', sendMessage);
-
-        // Send on Enter
-        chatbotInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
+    if (send) send.addEventListener('click', sendChatMessage);
+    if (input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
             }
         });
+    }
 
-        // Suggestion pills
-        document.querySelectorAll('.suggestion-pill').forEach(pill => {
-            pill.addEventListener('click', function() {
-                const question = this.getAttribute('data-question');
-                chatbotInput.value = question;
-                sendMessage();
+    // ===== FUNGSI LAINNYA TETAP UTUH =====
+    document.querySelectorAll('.filter-tab')?.forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const f = this.dataset.filter;
+            document.querySelectorAll('.question-item').forEach(item => {
+                const answered = item.classList.contains('answered-question');
+                item.style.display = (f === 'all' || (f === 'answered' && answered) || (f === 'unanswered' && !answered)) ? 'block' : 'none';
             });
         });
     });
 
-    // Add ripple effect animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-    `;
-    document.head.appendChild(style);
+    document.getElementById('searchInput')?.addEventListener('input', function() {
+        const t = this.value.toLowerCase();
+        document.querySelectorAll('.question-item').forEach(item => {
+            const title = item.querySelector('.question-title')?.textContent.toLowerCase() || '';
+            const content = item.querySelector('.question-content')?.textContent.toLowerCase() || '';
+            item.style.display = (title.includes(t) || content.includes(t)) ? 'block' : 'none';
+        });
+    });
+
+    document.querySelectorAll('.view-answers-btn')?.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const answers = document.getElementById('answers-' + id);
+            answers.classList.toggle('expanded');
+            const icon = this.querySelector('i');
+            icon.className = icon.className.includes('down') ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        });
+    });
+
+    document.querySelectorAll('.like-btn')?.forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const span = this.querySelector('span');
+            const count = parseInt(span.textContent) || 0;
+            span.textContent = this.classList.contains('active') ? count + 1 : Math.max(0, count - 1);
+        });
+    });
+
+    document.querySelectorAll('.bookmark-btn')?.forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            icon.className = this.classList.contains('active') ? 'bi bi-bookmark-fill' : 'bi bi-bookmark';
+            const span = this.querySelector('span');
+            const count = parseInt(span.textContent) || 0;
+            span.textContent = this.classList.contains('active') ? count + 1 : Math.max(0, count - 1);
+        });
+    });
+});
 </script>
 @endsection

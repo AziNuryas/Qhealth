@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\OpenAIService;
+use App\Services\GroqService; // ← ganti ke Groq
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    protected $openAIService;
+    protected $aiService;
 
-    public function __construct(OpenAIService $openAIService)
+    public function __construct(GroqService $aiService)
     {
-        $this->openAIService = $openAIService;
+        $this->aiService = $aiService;
     }
 
     public function sendMessage(Request $request)
     {
-        $request->validate([
-            'message' => 'required|string|max:1000'
-        ]);
-
         $message = $request->input('message');
-        $response = $this->openAIService->getChatGPTResponse($message);
-        
-        return response()->json([
-            'success' => true,
-            'response' => $response
-        ]);
+        $response = $this->aiService->getAIResponse($message);
+
+        return response()->json(['reply' => $response]);
     }
 }
