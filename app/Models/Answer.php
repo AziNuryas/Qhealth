@@ -11,6 +11,7 @@ class Answer extends Model
 
     protected $fillable = ['question_id', 'user_id', 'content'];
 
+   
     // Relasi dengan question
     public function question()
     {

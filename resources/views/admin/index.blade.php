@@ -7,6 +7,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
     
     :root {
+        /* Dashboard-specific variables */
         --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
         --premium-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
         --success-glow: 0 0 40px rgba(16, 185, 129, 0.4);
@@ -14,7 +15,7 @@
         --neon-green: #10b981;
         --neon-purple: #8b5cf6;
         
-        /* Light Theme */
+        /* Light Theme - Default */
         --bg-primary: #f8fafc;
         --bg-secondary: #e2e8f0;
         --text-primary: #1e293b;
@@ -23,6 +24,7 @@
         --border-color: rgba(255, 255, 255, 0.2);
         --card-bg: rgba(255, 255, 255, 0.9);
         
+        /* Dashboard Light Theme */
         --bg-body: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         --bg-hero: linear-gradient(135deg, 
             rgba(16, 185, 129, 0.95) 0%, 
@@ -54,16 +56,10 @@
         --inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
     }
     
-    /* Dark Theme - Multiple selectors for compatibility */
-    [data-theme="dark"],
-    [data-bs-theme="dark"], 
-    .dark-mode,
-    body.dark-mode,
-    html.dark-mode,
-    html[data-theme="dark"],
-    body[data-theme="dark"],
-    html[data-bs-theme="dark"],
-    body[data-bs-theme="dark"] {
+    /* Dark Theme - SIMPLIFIED */
+    [data-bs-theme="dark"],
+    .dark-mode {
+        /* Dark Theme */
         --bg-primary: #0f172a;
         --bg-secondary: #1e293b;
         --text-primary: #f8fafc;
@@ -72,6 +68,7 @@
         --border-color: rgba(255, 255, 255, 0.1);
         --card-bg: rgba(30, 41, 59, 0.8);
         
+        /* Dashboard Dark Theme */
         --bg-body: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         --bg-hero: linear-gradient(135deg, 
             rgba(16, 185, 129, 0.9) 0%, 
@@ -109,9 +106,16 @@
     }
     
     body {
+        background: var(--bg-body) !important;
+        min-height: 100vh;
+        color: var(--text-primary) !important;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .admin-dashboard-container {
         background: var(--bg-body);
         min-height: 100vh;
-        color: var(--text-primary);
     }
     
     .hero-section {
@@ -516,15 +520,12 @@
     }
     
     .welcome-text {
-        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: white !important;
         font-size: 2.5rem;
         font-weight: 900;
         letter-spacing: -0.02em;
         line-height: 1.1;
-        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         position: relative;
         z-index: 3;
     }
@@ -683,171 +684,173 @@
     }
 </style>
 
-<div class="container-fluid py-4">
-    {{-- Premium Hero Section --}}
-    <div class="hero-section text-center text-white position-relative">
-        <div class="row justify-content-center">
-            <div class="col-lg-9">
-                <h1 class="welcome-text mb-3">
-                    <i class="bi bi-heart-pulse me-3" style="color: rgba(255,255,255,0.9);"></i>
-                    Selamat Datang di Qhealth Admin
-                </h1>
-                <p class="subtitle mb-4">Dashboard kontrol premium untuk mengelola aplikasi kesehatan terdepan</p>
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="time-badge">
-                        <i class="bi bi-clock me-2"></i>{{ now()->format('d M Y, H:i') }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Premium Stats Cards --}}
-    <div class="row g-4 mb-5">
-        <!-- Users Card -->
-        <div class="col-lg-4 col-md-6 fade-in">
-            <div class="premium-card h-100 text-center">
-                <div class="stat-icon-container">
-                    <div class="stat-icon users">
-                        <i class="bi bi-people-fill text-white" style="font-size: 1.8rem;"></i>
-                    </div>
-                </div>
-                <div class="stat-number pulse-premium">{{ $userCount }}</div>
-                <h5 class="stat-title">Total Pengguna</h5>
-                <p class="stat-description">Pengguna aktif yang terdaftar dalam sistem kesehatan</p>
-                
-                <div class="chart-container">
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                </div>
-                
-                <a href="{{ route('admin.users.index') }}" class="premium-btn mt-3">
-                    <i class="bi bi-arrow-right-circle me-2"></i>Kelola Pengguna
-                </a>
-            </div>
-        </div>
-        
-        <!-- Questions Card -->
-        <div class="col-lg-4 col-md-6 fade-in">
-            <div class="premium-card h-100 text-center">
-                <div class="stat-icon-container">
-                    <div class="stat-icon questions">
-                        <i class="bi bi-question-circle-fill text-white" style="font-size: 1.8rem;"></i>
-                    </div>
-                </div>
-                <div class="stat-number pulse-premium">{{ $questionCount }}</div>
-                <h5 class="stat-title">Total Pertanyaan</h5>
-                <p class="stat-description">Pertanyaan kesehatan dari pengguna yang membutuhkan jawaban</p>
-                
-                <div class="chart-container">
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                </div>
-                
-                <a href="{{ route('admin.questions.index') }}" class="premium-btn mt-3">
-                    <i class="bi bi-arrow-right-circle me-2"></i>Kelola Pertanyaan
-                </a>
-            </div>
-        </div>
-        
-        <!-- Answers Card -->
-        <div class="col-lg-4 col-md-6 fade-in">
-            <div class="premium-card h-100 text-center">
-                <div class="stat-icon-container">
-                    <div class="stat-icon answers">
-                        <i class="bi bi-chat-left-text-fill text-white" style="font-size: 1.8rem;"></i>
-                    </div>
-                </div>
-                <div class="stat-number pulse-premium">{{ $answerCount }}</div>
-                <h5 class="stat-title">Total Jawaban</h5>
-                <p class="stat-description">Jawaban berkualitas dari tenaga kesehatan profesional</p>
-                
-                <div class="chart-container">
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-bar"></div>
-                </div>
-                
-                <a href="{{ route('admin.answers.index') }}" class="premium-btn mt-3">
-                    <i class="bi bi-arrow-right-circle me-2"></i>Kelola Jawaban
-                </a>
-            </div>
-        </div>
-    </div>
-
-    {{-- Premium Quick Actions --}}
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-11">
-            <div class="quick-actions-container text-center">
-                <h3 class="section-title">
-                    <i class="bi bi-lightning-fill text-warning me-2"></i>
-                    Aksi Cepat Premium
-                </h3>
-                <p class="section-subtitle">Akses instan ke fitur-fitur administrasi dengan performa tinggi</p>
-                
-                <div class="row g-3 justify-content-center">
-                    <div class="col-lg-3 col-md-6">
-                        <a href="{{ route('admin.users.index') }}" class="action-btn w-100">
-                            <i class="bi bi-people-fill"></i>
-                            <span>Pengguna</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="{{ route('admin.questions.index') }}" class="action-btn w-100">
-                            <i class="bi bi-question-circle-fill"></i>
-                            <span>Pertanyaan</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="#" class="action-btn w-100">
-                            <i class="bi bi-graph-up"></i>
-                            <span>Statistik</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="#" class="action-btn w-100">
-                            <i class="bi bi-gear-fill"></i>
-                            <span>Pengaturan</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Premium System Status --}}
-    <div class="row">
-        <div class="col text-center">
-            <div class="status-container">
-                <h5 class="status-title">
-                    <i class="bi bi-shield-check text-success me-2"></i>
-                    Sistem Premium Berjalan Optimal
-                </h5>
-                <div class="row g-3 justify-content-center">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="status-badge">
-                            <i class="bi bi-server me-2"></i>Server: Online
+<div class="admin-dashboard-container">
+    <div class="container-fluid py-4">
+        {{-- Premium Hero Section --}}
+        <div class="hero-section text-center text-white position-relative">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <h1 class="welcome-text mb-3">
+                        <i class="bi bi-heart-pulse me-3" style="color: rgba(255,255,255,0.9);"></i>
+                        Selamat Datang di Qhealth Admin
+                    </h1>
+                    <p class="subtitle mb-4">Dashboard kontrol premium untuk mengelola aplikasi kesehatan terdepan</p>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="time-badge">
+                            <i class="bi bi-clock me-2"></i>{{ now()->format('d M Y, H:i') }}
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="status-badge info">
-                            <i class="bi bi-database me-2"></i>Database: Aktif
+                </div>
+            </div>
+        </div>
+
+        {{-- Premium Stats Cards --}}
+        <div class="row g-4 mb-5">
+            <!-- Users Card -->
+            <div class="col-lg-4 col-md-6 fade-in">
+                <div class="premium-card h-100 text-center">
+                    <div class="stat-icon-container">
+                        <div class="stat-icon users">
+                            <i class="bi bi-people-fill text-white" style="font-size: 1.8rem;"></i>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="status-badge warning">
-                            <i class="bi bi-cpu me-2"></i>CPU: 45%
+                    <div class="stat-number pulse-premium">{{ $userCount }}</div>
+                    <h5 class="stat-title">Total Pengguna</h5>
+                    <p class="stat-description">Pengguna aktif yang terdaftar dalam sistem kesehatan</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                    </div>
+                    
+                    <a href="{{ route('admin.users.index') }}" class="premium-btn mt-3">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Kelola Pengguna
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Questions Card -->
+            <div class="col-lg-4 col-md-6 fade-in">
+                <div class="premium-card h-100 text-center">
+                    <div class="stat-icon-container">
+                        <div class="stat-icon questions">
+                            <i class="bi bi-question-circle-fill text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number pulse-premium">{{ $questionCount }}</div>
+                    <h5 class="stat-title">Total Pertanyaan</h5>
+                    <p class="stat-description">Pertanyaan kesehatan dari pengguna yang membutuhkan jawaban</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                    </div>
+                    
+                    <a href="{{ route('admin.questions.index') }}" class="premium-btn mt-3">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Kelola Pertanyaan
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Answers Card -->
+            <div class="col-lg-4 col-md-6 fade-in">
+                <div class="premium-card h-100 text-center">
+                    <div class="stat-icon-container">
+                        <div class="stat-icon answers">
+                            <i class="bi bi-chat-left-text-fill text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number pulse-premium">{{ $answerCount }}</div>
+                    <h5 class="stat-title">Total Jawaban</h5>
+                    <p class="stat-description">Jawaban berkualitas dari tenaga kesehatan profesional</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                    </div>
+                    
+                    <a href="{{ route('admin.answers.index') }}" class="premium-btn mt-3">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Kelola Jawaban
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- Premium Quick Actions --}}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-11">
+                <div class="quick-actions-container text-center">
+                    <h3 class="section-title">
+                        <i class="bi bi-lightning-fill text-warning me-2"></i>
+                        Aksi Cepat Premium
+                    </h3>
+                    <p class="section-subtitle">Akses instan ke fitur-fitur administrasi dengan performa tinggi</p>
+                    
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-lg-3 col-md-6">
+                            <a href="{{ route('admin.users.index') }}" class="action-btn w-100">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Pengguna</span>
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <a href="{{ route('admin.questions.index') }}" class="action-btn w-100">
+                                <i class="bi bi-question-circle-fill"></i>
+                                <span>Pertanyaan</span>
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <a href="#" class="action-btn w-100">
+                                <i class="bi bi-graph-up"></i>
+                                <span>Statistik</span>
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <a href="#" class="action-btn w-100">
+                                <i class="bi bi-gear-fill"></i>
+                                <span>Pengaturan</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Premium System Status --}}
+        <div class="row">
+            <div class="col text-center">
+                <div class="status-container">
+                    <h5 class="status-title">
+                        <i class="bi bi-shield-check text-success me-2"></i>
+                        Sistem Premium Berjalan Optimal
+                    </h5>
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="status-badge">
+                                <i class="bi bi-server me-2"></i>Server: Online
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="status-badge info">
+                                <i class="bi bi-database me-2"></i>Database: Aktif
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="status-badge warning">
+                                <i class="bi bi-cpu me-2"></i>CPU: 45%
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -858,70 +861,62 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to detect theme changes
-    function detectThemeChange() {
+    console.log('🎨 Premium Dashboard Loaded');
+    
+    // Sync theme with navbar
+    function syncTheme() {
         const html = document.documentElement;
-        const body = document.body;
+        const savedTheme = localStorage.getItem('admin-theme') || localStorage.getItem('theme') || 'light';
         
-        // Check various theme indicators
-        const isDark = 
-            html.getAttribute('data-theme') === 'dark' ||
-            html.getAttribute('data-bs-theme') === 'dark' ||
-            body.getAttribute('data-theme') === 'dark' ||
-            body.getAttribute('data-bs-theme') === 'dark' ||
-            html.classList.contains('dark-mode') ||
-            body.classList.contains('dark-mode') ||
-            localStorage.getItem('theme') === 'dark' ||
-            localStorage.getItem('bs-theme') === 'dark';
-            
-        console.log('Theme detected:', isDark ? 'dark' : 'light');
-        return isDark;
+        if (savedTheme === 'dark' || html.getAttribute('data-bs-theme') === 'dark') {
+            html.setAttribute('data-bs-theme', 'dark');
+            console.log('🌙 Dark theme applied');
+        } else {
+            html.setAttribute('data-bs-theme', 'light');
+            console.log('☀️ Light theme applied');
+        }
     }
     
-    // Observer to watch for theme changes
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes') {
-                const attributeName = mutation.attributeName;
-                if (attributeName === 'data-theme' || 
-                    attributeName === 'data-bs-theme' || 
-                    attributeName === 'class') {
-                    console.log('Theme change detected via:', attributeName);
-                    detectThemeChange();
-                }
+    // Initial sync
+    syncTheme();
+    
+    // Listen for theme changes
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            setTimeout(syncTheme, 100);
+        });
+    }
+    
+    // Animate numbers
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const finalValue = parseInt(stat.textContent);
+        let current = 0;
+        const increment = finalValue / 30;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= finalValue) {
+                stat.textContent = finalValue;
+                clearInterval(timer);
+            } else {
+                stat.textContent = Math.floor(current);
             }
+        }, 50);
+    });
+    
+    // Add hover effects
+    const premiumCards = document.querySelectorAll('.premium-card');
+    premiumCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-12px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) scale(1)';
         });
     });
-    
-    // Start observing
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['data-theme', 'data-bs-theme', 'class']
-    });
-    
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['data-theme', 'data-bs-theme', 'class']
-    });
-    
-    // Listen for storage changes (if navbar uses localStorage)
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'theme' || e.key === 'bs-theme') {
-            console.log('Theme change detected via localStorage');
-            detectThemeChange();
-        }
-    });
-    
-    // Listen for custom events (if navbar dispatches them)
-    window.addEventListener('themeChanged', function(e) {
-        console.log('Theme change detected via custom event');
-        detectThemeChange();
-    });
-    
-    // Initial theme detection
-    detectThemeChange();
-    
-    console.log('Qhealth Dashboard loaded with enhanced theme support');
 });
 </script>
 @endsection

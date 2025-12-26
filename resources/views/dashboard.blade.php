@@ -83,7 +83,7 @@
         padding: 36px;
         margin-bottom: 28px;
         box-shadow: var(--shadow-lg);
-        position: realative;
+        position: relative;
         overflow: hidden;
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
@@ -235,6 +235,7 @@
         border-radius: 22px;
         padding: 30px;
         box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
     }
     .form-card:hover {
         box-shadow: var(--shadow-lg);
@@ -293,6 +294,7 @@
         color: var(--text-primary);
         outline: none;
         font-family: 'Manrope', sans-serif;
+        transition: all 0.3s ease;
     }
     .input-field:focus {
         background: var(--bg-secondary);
@@ -320,6 +322,11 @@
         gap: 10px;
         box-shadow: 0 10px 24px rgba(16, 185, 129, 0.35);
         font-family: 'Manrope', sans-serif;
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(16, 185, 129, 0.45);
     }
     /* ===== FEED ===== */
     .feed-header {
@@ -357,6 +364,7 @@
         color: var(--text-secondary);
         cursor: pointer;
         font-family: 'Manrope', sans-serif;
+        transition: all 0.3s ease;
     }
     .filter-tab.active {
         background: #10b981;
@@ -377,6 +385,10 @@
         border-radius: 20px;
         overflow: hidden;
         box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+    }
+    .question-item:hover {
+        box-shadow: var(--shadow-md);
     }
     .question-item--own {
         border: 2px solid #10b981;
@@ -474,6 +486,7 @@
         justify-content: space-between;
         padding: 14px 24px;
         border-top: 1.5px solid var(--card-border);
+        gap: 12px;
     }
     .action-buttons {
         display: flex;
@@ -493,33 +506,20 @@
         font-family: 'Manrope', sans-serif;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
+        transition: all 0.3s ease;
     }
-    .like-btn {
-        color: #3b82f6;
-        border-color: rgba(59, 130, 246, 0.25);
+    .answer-question-btn {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.3);
+        color: #10b981;
     }
-    .like-btn.active {
-        background: rgba(59, 130, 246, 0.15);
-        border-color: #3b82f6;
-    }
-    .like-btn i::before {
-        content: "👍";
-        font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
-        font-size: 16px !important;
-    }
-    .bookmark-btn {
-        color: #8b5cf6;
-        border-color: rgba(139, 92, 246, 0.25);
-    }
-    .bookmark-btn.active {
-        background: rgba(139, 92, 246, 0.15);
-        border-color: #8b5cf6;
-    }
-    .bookmark-btn i {
-        font-size: 16px;
+    .answer-question-btn:hover {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: #10b981;
+        transform: translateY(-2px);
     }
     .view-answers-btn {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 8px;
         padding: 8px 18px;
@@ -532,58 +532,360 @@
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         font-family: 'Manrope', sans-serif;
+        transition: all 0.3s ease;
     }
-    .answers-list {
+    .view-answers-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    /* ===== iOS STYLE SCROLLABLE ANSWERS (CONTROL CENTER STYLE) ===== */
+    .answers-section {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.45s ease;
-    }
-    .answers-list.expanded {
-        max-height: 600px;
-        overflow-y: auto;
-        border-top: 1.5px solid var(--card-border);
-    }
-    .answer-item {
-        padding: 20px 24px;
-        border-top: 1.5px solid var(--card-border);
+        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         background: var(--bg-primary);
     }
-    .answer-header {
+    .answers-section.expanded {
+        max-height: 400px; /* Max height untuk iOS style */
+        border-top: 1.5px solid var(--card-border);
+    }
+    .answers-container {
+        padding: 16px 24px 20px;
+    }
+    .answers-header {
         display: flex;
         align-items: center;
-        gap: 12px;
+        justify-content: space-between;
         margin-bottom: 12px;
     }
+    .answers-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+        font-family: 'Manrope', sans-serif;
+    }
+    .answers-count {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+    /* iOS STYLE SCROLLABLE LIST */
+    .answers-scroll-container {
+        max-height: 320px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 8px;
+        /* iOS Style Scrollbar */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(16, 185, 129, 0.3) transparent;
+    }
+    .answers-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    .answers-scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .answers-scroll-container::-webkit-scrollbar-thumb {
+        background: rgba(16, 185, 129, 0.3);
+        border-radius: 10px;
+    }
+    .answers-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(16, 185, 129, 0.5);
+    }
+    .answers-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    /* iOS NOTIFICATION STYLE ANSWER CARD */
+    .answer-item {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1.5px solid var(--card-border);
+        border-radius: 14px;
+        padding: 12px 14px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* iOS Style Shadow */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .answer-item:hover {
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .answer-item:active {
+        transform: scale(0.98);
+    }
+    .answer-item-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        gap: 10px;
+    }
+    .answer-author-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
     .answer-avatar {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13px;
         font-family: 'Space Grotesk', sans-serif;
+        flex-shrink: 0;
+    }
+    .answer-author-text {
+        flex: 1;
+        min-width: 0;
     }
     .answer-author {
         font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13px;
         color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .answer-time {
-        font-size: 12px;
+        font-size: 11px;
         color: var(--text-secondary);
-        margin-left: auto;
+        margin-top: 1px;
     }
-    .answer-content {
-        font-size: 15px;
-        color: var(--text-secondary);
-        line-height: 1.6;
-        margin: 0;
+    .answer-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+    .answer-like-btn,
+    .answer-dislike-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 10px;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1.5px solid transparent;
+        background: transparent;
         font-family: 'Manrope', sans-serif;
-        padding-left: 48px;
+        transition: all 0.2s ease;
+    }
+    .answer-like-btn {
+        color: #10b981;
+        border-color: rgba(16, 185, 129, 0.2);
+    }
+    .answer-like-btn.active {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: #10b981;
+    }
+    .answer-dislike-btn {
+        color: #ef4444;
+        border-color: rgba(239, 68, 68, 0.2);
+    }
+    .answer-dislike-btn.active {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: #ef4444;
+    }
+    .answer-like-btn i,
+    .answer-dislike-btn i {
+        font-size: 12px;
+    }
+    .answer-item-content {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        font-family: 'Manrope', sans-serif;
+        padding-left: 40px;
+        /* Limit lines untuk iOS style */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    /* ===== POPUP MODAL ===== */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+    .modal-content {
+        background: var(--card-bg);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1.5px solid var(--card-border);
+        border-radius: 24px;
+        padding: 32px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+        animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+    .modal-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text-primary);
+        font-family: 'Manrope', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--bg-primary);
+        border: 1.5px solid var(--card-border);
+        color: var(--text-primary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+    .modal-close:hover {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+        transform: rotate(90deg);
+    }
+    .modal-question-preview {
+        background: var(--bg-primary);
+        border: 1.5px solid var(--card-border);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+    .modal-question-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+        font-family: 'Manrope', sans-serif;
+    }
+    .modal-question-content {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        font-family: 'Manrope', sans-serif;
+    }
+    .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .modal-form-label {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+        font-family: 'Manrope', sans-serif;
+    }
+    .modal-form-textarea {
+        width: 100%;
+        padding: 14px 18px;
+        background: var(--bg-primary);
+        border: 1.8px solid var(--card-border);
+        border-radius: 16px;
+        font-size: 15px;
+        color: var(--text-primary);
+        resize: vertical;
+        min-height: 120px;
+        outline: none;
+        font-family: 'Manrope', sans-serif;
+        transition: all 0.3s ease;
+    }
+    .modal-form-textarea:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+    .modal-form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+    .modal-btn-cancel {
+        padding: 12px 24px;
+        background: transparent;
+        border: 1.8px solid var(--card-border);
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-family: 'Manrope', sans-serif;
+        transition: all 0.3s ease;
+    }
+    .modal-btn-cancel:hover {
+        background: var(--bg-primary);
+        border-color: var(--text-secondary);
+    }
+    .modal-btn-submit {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #10b981, #047857);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Manrope', sans-serif;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .modal-btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    .modal-btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
     }
     /* EMPTY STATE */
     .empty-state {
@@ -737,6 +1039,10 @@
         cursor: pointer;
         box-shadow: 0 10px 24px rgba(16, 185, 129, 0.45);
         z-index: 9999;
+        transition: all 0.3s ease;
+    }
+    .chatbot-toggle:hover {
+        transform: scale(1.1);
     }
     /* ANIMASI TITIK MENGETIK */
     .typing-dots {
@@ -776,10 +1082,14 @@
         .content-layout { grid-template-columns: 1fr; }
         .question-header { flex-direction: column; align-items: flex-start; gap: 12px; }
         .question-footer { flex-direction: column; gap: 12px; align-items: stretch; }
-        .action-buttons { justify-content: center; }
-        .view-answers-btn { width: 100%; justify-content: center; }
+        .action-buttons { width: 100%; }
+        .answer-question-btn, .view-answers-btn { flex: 1; justify-content: center; }
         .chatbot-panel { width: calc(100vw - 32px); right: 16px; bottom: 80px; }
         .chatbot-toggle { bottom: 16px; right: 16px; }
+        .modal-content { padding: 24px; }
+        .modal-form-actions { flex-direction: column; }
+        .modal-btn-cancel, .modal-btn-submit { width: 100%; justify-content: center; }
+        .answers-scroll-container { max-height: 280px; }
     }
 </style>
 <!-- Animated Background -->
@@ -947,6 +1257,7 @@
                             session()->put('qhealth_v3_profiles', $profiles);
                         }
                         $profile = $profiles[$qid];
+                        $totalAnswers = $q->answers ? $q->answers->count() : 0;
                     @endphp
                     <article class="question-item {{ $isAnswered ? 'answered-question' : 'unanswered-question' }} {{ $q->user_id == auth()->id() ? 'question-item--own' : '' }}" data-id="{{ $q->id }}">
                         <div class="question-header">
@@ -970,45 +1281,66 @@
                         </div>
                         <div class="question-footer">
                             <div class="action-buttons">
-                                <button class="action-btn like-btn" data-id="{{ $q->id }}">
-                                    <i></i>
-                                    <span>0</span>
+                                <button class="action-btn answer-question-btn" data-id="{{ $q->id }}" data-title="{{ $q->title }}" data-content="{{ $q->question }}">
+                                    <i class="bi bi-reply-fill"></i>
+                                    <span>Jawab</span>
                                 </button>
-                                <button class="action-btn bookmark-btn" data-id="{{ $q->id }}">
-                                    <i class="bi bi-bookmark"></i>
-                                    <span>0</span>
-                                </button>
+                                @if($isAnswered)
+                                    <button class="view-answers-btn" data-id="{{ $q->id }}">
+                                        <span>Lihat {{ $totalAnswers }} Jawaban</span>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                @endif
                             </div>
-                            @if($isAnswered)
-                                <button class="view-answers-btn" data-id="{{ $q->id }}">
-                                    <span>{{ $q->answers->count() }} Jawaban</span>
-                                    <i class="bi bi-chevron-down"></i>
-                                </button>
-                            @endif
                         </div>
                         @if($isAnswered)
-                            <div class="answers-list" id="answers-{{ $q->id }}">
-                                @foreach($q->answers as $answer)
-                                    @php
-                                        $aid = 'a_' . $answer->id;
-                                        if (!isset($answers[$aid])) {
-                                            $randAns = $characters[array_rand($characters)];
-                                            $answers[$aid] = $randAns;
-                                            session()->put('qhealth_v3_answers', $answers);
-                                        }
-                                        $ansProfile = $answers[$aid];
-                                    @endphp
-                                    <div class="answer-item">
-                                        <div class="answer-header">
-                                            <div class="answer-avatar {{ $ansProfile['avatar_class'] }}">
-                                                {{ $ansProfile['name'][0] }}
-                                            </div>
-                                            <span class="answer-author">{{ $ansProfile['name'] }}</span>
-                                            <span class="answer-time">{{ $answer->created_at->diffForHumans() }}</span>
-                                        </div>
-                                        <p class="answer-content">{{ $answer->content }}</p>
+                            <div class="answers-section" id="answers-{{ $q->id }}">
+                                <div class="answers-container">
+                                    <div class="answers-header">
+                                        <h4 class="answers-title">Jawaban</h4>
+                                        <span class="answers-count">{{ $totalAnswers }} balasan</span>
                                     </div>
-                                @endforeach
+                                    <!-- iOS STYLE SCROLLABLE CONTAINER -->
+                                    <div class="answers-scroll-container">
+                                        <div class="answers-list">
+                                            @foreach($q->answers as $answer)
+                                                @php
+                                                    $aid = 'a_' . $answer->id;
+                                                    if (!isset($answers[$aid])) {
+                                                        $randAns = $characters[array_rand($characters)];
+                                                        $answers[$aid] = $randAns;
+                                                        session()->put('qhealth_v3_answers', $answers);
+                                                    }
+                                                    $ansProfile = $answers[$aid];
+                                                @endphp
+                                                <div class="answer-item">
+                                                    <div class="answer-item-header">
+                                                        <div class="answer-author-info">
+                                                            <div class="answer-avatar {{ $ansProfile['avatar_class'] }}">
+                                                                {{ $ansProfile['name'][0] }}
+                                                            </div>
+                                                            <div class="answer-author-text">
+                                                                <div class="answer-author">{{ $ansProfile['name'] }}</div>
+                                                                <div class="answer-time">{{ $answer->created_at->diffForHumans() }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="answer-actions">
+                                                            <button class="answer-like-btn" data-id="{{ $answer->id }}">
+                                                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                                                                <span>0</span>
+                                                            </button>
+                                                            <button class="answer-dislike-btn" data-id="{{ $answer->id }}">
+                                                                <i class="bi bi-hand-thumbs-down-fill"></i>
+                                                                <span>0</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <p class="answer-item-content">{{ $answer->content }}</p>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </article>
@@ -1023,6 +1355,40 @@
         </main>
     </div>
 </div>
+
+<!-- POPUP MODAL FOR ANSWER -->
+<div class="modal-overlay" id="answerModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <i class="bi bi-chat-dots-fill"></i>
+                Berikan Jawaban
+            </h3>
+            <button class="modal-close" id="modalClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="modal-question-preview">
+            <div class="modal-question-title" id="modalQuestionTitle"></div>
+            <div class="modal-question-content" id="modalQuestionContent"></div>
+        </div>
+        <form class="modal-form" id="answerModalForm">
+            @csrf
+            <div>
+                <label class="modal-form-label">Jawaban Anda</label>
+                <textarea class="modal-form-textarea" id="modalAnswerContent" placeholder="Tulis jawaban yang informatif dan membantu..." required></textarea>
+            </div>
+            <div class="modal-form-actions">
+                <button type="button" class="modal-btn-cancel" id="modalCancelBtn">Batal</button>
+                <button type="submit" class="modal-btn-submit">
+                    <i class="bi bi-send-fill"></i>
+                    Kirim Jawaban
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- CHATBOT -->
 <div class="chatbot-panel" id="chatbotPanel">
     <div class="chatbot-header">
@@ -1051,7 +1417,155 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // ===== CHATBOT DENGAN AI NYATA + ANIMASI =====
+    // ===== ANSWER MODAL =====
+    const answerModal = document.getElementById('answerModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const answerModalForm = document.getElementById('answerModalForm');
+    const modalQuestionTitle = document.getElementById('modalQuestionTitle');
+    const modalQuestionContent = document.getElementById('modalQuestionContent');
+    const modalAnswerContent = document.getElementById('modalAnswerContent');
+    let currentQuestionId = null;
+
+    // Open modal when click "Jawab" button
+    document.querySelectorAll('.answer-question-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentQuestionId = this.dataset.id;
+            modalQuestionTitle.textContent = this.dataset.title;
+            modalQuestionContent.textContent = this.dataset.content;
+            answerModal.classList.add('active');
+            setTimeout(() => modalAnswerContent.focus(), 100);
+        });
+    });
+
+    // Close modal
+    function closeModal() {
+        answerModal.classList.remove('active');
+        modalAnswerContent.value = '';
+        currentQuestionId = null;
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalCancelBtn.addEventListener('click', closeModal);
+    answerModal.addEventListener('click', function(e) {
+        if (e.target === answerModal) closeModal();
+    });
+
+    // Submit answer - FIXED untuk tidak redirect sampai sukses
+    answerModalForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent form from submitting traditionally
+        
+        const content = modalAnswerContent.value.trim();
+        
+        if (!content) {
+            alert('Jawaban tidak boleh kosong!');
+            return false;
+        }
+
+        const submitBtn = this.querySelector('.modal-btn-submit');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Mengirim...';
+        submitBtn.disabled = true;
+
+        try {
+            const res = await fetch(`/questions/${currentQuestionId}/answer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ content: content })
+            });
+
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await res.json();
+            
+            if (data.success) {
+                closeModal();
+                // Tunggu animasi close selesai baru reload
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
+            } else {
+                alert('Gagal mengirim jawaban: ' + (data.message || 'Coba lagi'));
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            alert('Terjadi kesalahan. Pastikan koneksi internet Anda stabil.');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+        
+        return false;
+    });
+
+    // ===== TOGGLE ANSWERS =====
+    document.querySelectorAll('.view-answers-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const answersSection = document.getElementById('answers-' + id);
+            const isExpanded = answersSection.classList.contains('expanded');
+            
+            answersSection.classList.toggle('expanded');
+            const icon = this.querySelector('i');
+            icon.className = isExpanded ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+            
+            const textSpan = this.querySelector('span');
+            const matches = textSpan.textContent.match(/\d+/);
+            const count = matches ? matches[0] : '0';
+            textSpan.textContent = isExpanded ? `Lihat ${count} Jawaban` : `Sembunyikan`;
+        });
+    });
+
+    // ===== LIKE/DISLIKE ANSWERS =====
+    document.querySelectorAll('.answer-like-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const wasActive = this.classList.contains('active');
+            this.classList.toggle('active');
+            
+            const span = this.querySelector('span');
+            const count = parseInt(span.textContent) || 0;
+            span.textContent = wasActive ? Math.max(0, count - 1) : count + 1;
+            
+            // Remove dislike if was active
+            const dislikeBtn = this.parentElement.querySelector('.answer-dislike-btn');
+            if (!wasActive && dislikeBtn.classList.contains('active')) {
+                dislikeBtn.classList.remove('active');
+                const dislikeSpan = dislikeBtn.querySelector('span');
+                const dislikeCount = parseInt(dislikeSpan.textContent) || 0;
+                dislikeSpan.textContent = Math.max(0, dislikeCount - 1);
+            }
+        });
+    });
+
+    document.querySelectorAll('.answer-dislike-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const wasActive = this.classList.contains('active');
+            this.classList.toggle('active');
+            
+            const span = this.querySelector('span');
+            const count = parseInt(span.textContent) || 0;
+            span.textContent = wasActive ? Math.max(0, count - 1) : count + 1;
+            
+            // Remove like if was active
+            const likeBtn = this.parentElement.querySelector('.answer-like-btn');
+            if (!wasActive && likeBtn.classList.contains('active')) {
+                likeBtn.classList.remove('active');
+                const likeSpan = likeBtn.querySelector('span');
+                const likeCount = parseInt(likeSpan.textContent) || 0;
+                likeSpan.textContent = Math.max(0, likeCount - 1);
+            }
+        });
+    });
+
+    // ===== CHATBOT =====
     const toggle = document.getElementById('chatbotToggle');
     const panel = document.getElementById('chatbotPanel');
     const close = document.getElementById('chatbotClose');
@@ -1086,7 +1600,6 @@ document.addEventListener('DOMContentLoaded', function() {
         input.disabled = true;
         send.disabled = true;
 
-        // Animasi titik-titik
         const typingDiv = document.createElement('div');
         typingDiv.className = 'chat-message bot';
         typingDiv.innerHTML = 'Mengetik<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
@@ -1094,7 +1607,7 @@ document.addEventListener('DOMContentLoaded', function() {
         messages.scrollTop = messages.scrollHeight;
 
         try {
-            const response = await fetch('/chat/send', {
+            const response = await fetch('/api/chatbot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1104,7 +1617,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            typingDiv.remove(); // Hapus animasi
+            typingDiv.remove();
 
             if (data.reply) {
                 addMessage(data.reply);
@@ -1132,7 +1645,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== FUNGSI LAINNYA TETAP UTUH =====
+    // ===== FILTER & SEARCH =====
     document.querySelectorAll('.filter-tab')?.forEach(tab => {
         tab.addEventListener('click', function() {
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -1151,36 +1664,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const title = item.querySelector('.question-title')?.textContent.toLowerCase() || '';
             const content = item.querySelector('.question-content')?.textContent.toLowerCase() || '';
             item.style.display = (title.includes(t) || content.includes(t)) ? 'block' : 'none';
-        });
-    });
-
-    document.querySelectorAll('.view-answers-btn')?.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const answers = document.getElementById('answers-' + id);
-            answers.classList.toggle('expanded');
-            const icon = this.querySelector('i');
-            icon.className = icon.className.includes('down') ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
-        });
-    });
-
-    document.querySelectorAll('.like-btn')?.forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const span = this.querySelector('span');
-            const count = parseInt(span.textContent) || 0;
-            span.textContent = this.classList.contains('active') ? count + 1 : Math.max(0, count - 1);
-        });
-    });
-
-    document.querySelectorAll('.bookmark-btn')?.forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const icon = this.querySelector('i');
-            icon.className = this.classList.contains('active') ? 'bi bi-bookmark-fill' : 'bi bi-bookmark';
-            const span = this.querySelector('span');
-            const count = parseInt(span.textContent) || 0;
-            span.textContent = this.classList.contains('active') ? count + 1 : Math.max(0, count - 1);
         });
     });
 });

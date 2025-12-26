@@ -9,8 +9,9 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'question'];
+    protected $fillable = ['user_id', 'title', 'question', ];
 
+   
     // Relasi dengan user
     public function user()
     {

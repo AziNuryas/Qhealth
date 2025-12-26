@@ -11,81 +11,93 @@ use App\Http\Controllers\AdminQuestionController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAnswerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\ChatController;
+Route::get('/home', function () {
+    if (Auth::check()) {
+        if (Auth::user()->role === 'admin') {
+            return redirect('/admin');
+        }
+        return redirect('/dashboard');
+    }
+    return redirect('/login');
+})->name('admin/index');
 
-
-Route::post('/chat/send', [ChatController::class, 'sendMessage']);
-
-
-// Rute untuk admin (dengan middleware auth dan admin)
-Route::middleware(['auth', 'admin'])->group(function () {
-    // Rute untuk dashboard admin
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    
-  // Route untuk mengelola Pengguna
-    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
-    Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
-    Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
-    Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit'); // route edit manual
-    Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
-    
-    // Route untuk mengelola Pertanyaan
-    Route::get('/admin/questions', [AdminQuestionController::class, 'index'])->name('admin.questions.index');
-    Route::get('/admin/questions/create', [AdminQuestionController::class, 'create'])->name('admin.questions.create');
-    Route::post('/admin/questions', [AdminQuestionController::class, 'store'])->name('admin.questions.store');
-    Route::get('/admin/questions/{question}', [AdminQuestionController::class, 'show'])->name('admin.questions.show');
-    Route::get('/admin/questions/{question}/edit', [AdminQuestionController::class, 'edit'])->name('admin.questions.edit');
-    Route::put('/admin/questions/{question}', [AdminQuestionController::class, 'update'])->name('admin.questions.update');
-    Route::delete('/admin/questions/{question}', [AdminQuestionController::class, 'destroy'])->name('admin.questions.destroy');
-    Route::get('admin/answers', [AdminAnswerController::class, 'index'])->name('admin.answers.index');
-    Route::get('admin/answers/{id}', [AdminAnswerController::class, 'show'])->name('admin.answers.show');
-    Route::get('admin/answers/{id}/edit', [AdminAnswerController::class, 'edit'])->name('admin.answers.edit');
-    Route::delete('admin/answers/{id}', [AdminAnswerController::class, 'destroy'])->name('admin.answers.destroy');
-    Route::get('/admin/answers/{id}', [AdminAnswerController::class, 'show'])->name('admin.answers.show');
-    
-
-});
-// Rute untuk pengguna biasa (auth)
-Route::middleware('auth')->group(function () {
-    // Dashboard untuk pengguna biasa
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
-    
-    // Profil pengguna
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Pertanyaan
-  Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
-    Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
-    Route::get('/pertanyaan', [QuestionController::class, 'index'])->name('questions.index');
-    Route::get('/questions/{id}/answer', [QuestionController::class, 'answerForm'])->name('questions.answerForm'); // Ubah nama route
-    Route::post('/questions/{id}/answer', [QuestionController::class, 'answer'])->name('questions.answer.store');
-});
-Route::post('login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
-// Rute publik (tanpa autentikasi)
+// =============== PUBLIC ROUTES ===============
 Route::get('/', fn () => view('welcome'))->name('home');
 Route::get('/bmi', [BmiController::class, 'index'])->name('bmi');
 
-// Rute autentikasi
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Route Logout
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-    // Route Login
+// =============== AUTH ROUTES ===============
+// Login/Logout routes (TARUH DI ATAS!)
+Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
 
-// Memuat route autentikasi
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+// =============== ADMIN ROUTES ===============
+// PENTING: Taruh admin routes SEBELUM middleware auth umum
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        
+        // Users Management
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
+        Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+        Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        
+        // Questions Management
+        Route::get('/questions', [AdminQuestionController::class, 'index'])->name('questions.index');
+        Route::get('/questions/create', [AdminQuestionController::class, 'create'])->name('questions.create');
+        Route::post('/questions', [AdminQuestionController::class, 'store'])->name('questions.store');
+        Route::get('/questions/{question}', [AdminQuestionController::class, 'show'])->name('questions.show');
+        Route::get('/questions/{question}/edit', [AdminQuestionController::class, 'edit'])->name('questions.edit');
+        Route::put('/questions/{question}', [AdminQuestionController::class, 'update'])->name('questions.update');
+        Route::delete('/questions/{question}', [AdminQuestionController::class, 'destroy'])->name('questions.destroy');
+        
+        // Answers Management
+        Route::get('/answers', [AdminAnswerController::class, 'index'])->name('answers.index');
+        Route::get('/answers/{id}', [AdminAnswerController::class, 'show'])->name('answers.show');
+        Route::get('/answers/{id}/edit', [AdminAnswerController::class, 'edit'])->name('answers.edit');
+        Route::delete('/answers/{id}', [AdminAnswerController::class, 'destroy'])->name('answers.destroy');
+    });
+});
+
+// =============== USER ROUTES (Regular Users) ===============
+Route::middleware('auth')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
+    
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Questions
+    Route::get('/pertanyaan', [QuestionController::class, 'index'])->name('questions.index');
+    Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+    Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
+    Route::get('/questions/{id}/answer', [QuestionController::class, 'answerForm'])->name('questions.answerForm');
+    Route::post('/questions/{id}/answer', [QuestionController::class, 'answer'])->name('questions.answer.store');
+    
+    // Chat
+    Route::post('/chat', [ChatController::class, 'sendMessage']);
+});
+
+// =============== API ROUTES ===============
+Route::post('/api/login', [AuthController::class, 'login'])->name('api.login');
+Route::middleware('auth:sanctum')->get('/api/user', function (Request $request) {
+    return $request->user();
+});
+
 require __DIR__.'/auth.php';

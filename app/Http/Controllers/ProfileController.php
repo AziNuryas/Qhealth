@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
@@ -67,6 +68,27 @@ class ProfileController extends Controller
         return redirect()->route('profile.show');
 
     }
+
+    
+public function apiUpdate(Request $request): JsonResponse
+{
+    $user = $request->user();
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+    ]);
+
+    $user->fill($request->only('name', 'email'));
+
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
+    }
+
+    $user->save();
+
+    return response()->json($user);
+}
     
     
     

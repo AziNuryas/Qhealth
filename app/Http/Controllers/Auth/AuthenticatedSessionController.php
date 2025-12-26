@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -22,35 +22,53 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
-{
-    // Autentikasi pengguna
-    $request->authenticate();
+    public function store(Request $request): RedirectResponse
+    {
+        // Validasi manual - JANGAN pakai LoginRequest
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    // Regenerasi session setelah login
-    $request->session()->regenerate();
+        // DEBUG
+        \Log::info('=== LOGIN ATTEMPT ===');
+        \Log::info('Email: ' . $request->email);
 
-    // Cek jika pengguna adalah admin dan arahkan ke halaman admin
-    if (Auth::user()->role === 'admin') {
-        return redirect()->route('admin.index');  // Ganti dengan rute admin kamu
+        // Coba login
+        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            
+            $user = Auth::user();
+            \Log::info('Login SUCCESS for: ' . $user->email);
+            \Log::info('User Role: ' . $user->role);
+            \Log::info('Role check: ' . ($user->role === 'admin' ? 'IS ADMIN' : 'NOT ADMIN'));
+            
+            // PASTI redirect ke admin jika role admin
+            if ($user->role === 'admin') {
+                \Log::info('Redirecting to ADMIN: /admin');
+                return redirect('/admin'); // Langsung ke admin
+            }
+            
+            \Log::info('Redirecting to USER: /dashboard');
+            return redirect('/dashboard');
+        }
+
+        \Log::warning('Login FAILED for: ' . $request->email);
+        throw ValidationException::withMessages([
+            'email' => __('auth.failed'),
+        ]);
     }
-
-    // Pengalihan untuk pengguna biasa ke dashboard
-    return redirect()->intended(route('dashboard', absolute: false));
-}
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request)
-{
-    Auth::logout();
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::logout();
 
-    // Hapus session dan regenerasi token
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    return redirect('/login');
-}
-
+        return redirect('/login');
+    }
 }

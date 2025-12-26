@@ -1,59 +1,40 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         try {
-            // Validasi sederhana
-            if (!$request->name || !$request->email || !$request->password) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Semua field harus diisi'
-                ], 422);
-            }
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6|confirmed',
+            ]);
 
-            if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Format email tidak valid'
-                ], 422);
-            }
-
-            if (strlen($request->password) < 6) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Password minimal 6 karakter'
-                ], 422);
-            }
-
-            // Check if user exists
-            if (User::where('email', $request->email)->exists()) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Email sudah terdaftar'
-                ], 422);
-            }
-
-            // Create user
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
             ]);
+
+            // ✅ Buat Sanctum token
+            $token = $user->createToken('mobile-app')->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Registrasi berhasil',
+                'token' => $token,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email' => $user->email
+                    'email' => $user->email,
                 ]
             ], 201);
 
@@ -65,39 +46,36 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         try {
-            if (!$request->email || !$request->password) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Email dan password harus diisi'
-                ], 422);
-            }
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
 
             $user = User::where('email', $request->email)->first();
 
-            if (!$user) {
+            if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'User tidak ditemukan'
+                    'error' => 'Email atau password salah'
                 ], 401);
             }
 
-            if (!Hash::check($request->password, $user->password)) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Password salah'
-                ], 401);
-            }
+            // ✅ Buat Sanctum token
+            $token = $user->createToken('mobile-app')->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Login berhasil',
+                'token' => $token,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email' => $user->email
+                    'email' => $user->email,
+                    'gender' => $user->gender,
+                    'phone' => $user->phone,
                 ]
             ]);
 
@@ -107,5 +85,12 @@ class AuthController extends Controller
                 'error' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        // Hapus token Sanctum yang sedang digunakan
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Berhasil logout']);
     }
 }
